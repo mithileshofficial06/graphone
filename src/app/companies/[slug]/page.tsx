@@ -18,7 +18,7 @@ import ProductCard from '@/components/ui/ProductCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
 import { CompanyWithRelations } from '@/types';
-const CHART_COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981'];
+const CHART_COLORS = ['#0066ff', '#ff3b30', '#ffe500', '#0a0a0a'];
 
 export default function CompanyDetailPage({
   params,
@@ -69,10 +69,10 @@ export default function CompanyDetailPage({
       <div className="section-container py-8 md:py-12">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-foreground mb-8 transition-colors group"
+          className="link-brutal inline-flex items-center gap-2 mb-8 group"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          Back to companies
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" strokeWidth={3} />
+          BACK TO COMPANIES
         </Link>
 
         <motion.div
@@ -82,8 +82,8 @@ export default function CompanyDetailPage({
           className="surface-card p-6 md:p-8 mb-6"
         >
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-3xl">
+            <div className="w-20 h-20 bg-black text-white border-[3px] border-black shadow-[4px_4px_0_#0a0a0a] flex items-center justify-center flex-shrink-0">
+              <span className="font-black text-3xl">
                 {company.name.charAt(0)}
               </span>
             </div>
@@ -91,10 +91,10 @@ export default function CompanyDetailPage({
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3">
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+                  <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-2">
                     {company.name}
                   </h1>
-                  <p className="text-lg text-zinc-500">{company.tagline}</p>
+                  <p className="text-lg text-muted font-bold uppercase tracking-wide">{company.tagline}</p>
                 </div>
                 {company.website_url && (
                   <a
@@ -103,30 +103,30 @@ export default function CompanyDetailPage({
                     rel="noopener noreferrer"
                     className="btn-secondary text-sm flex-shrink-0"
                   >
-                    <ExternalLink className="w-4 h-4" />
-                    Visit Website
+                    <ExternalLink className="w-4 h-4" strokeWidth={3} />
+                    VISIT WEBSITE
                   </a>
                 )}
               </div>
 
-              <p className="text-zinc-400 mb-5 leading-relaxed">{company.description}</p>
+              <p className="text-muted mb-5 leading-relaxed font-medium">{company.description}</p>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500 mb-4">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted font-bold uppercase tracking-wide mb-4">
                 {company.founded_year && (
                   <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" />
+                    <Calendar className="w-3.5 h-3.5" strokeWidth={3} />
                     <span>Founded {company.founded_year}</span>
                   </div>
                 )}
                 {company.headquarters && (
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5" />
+                    <MapPin className="w-3.5 h-3.5" strokeWidth={3} />
                     <span>{company.headquarters}</span>
                   </div>
                 )}
                 {company.employee_count && (
                   <div className="flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" />
+                    <Users className="w-3.5 h-3.5" strokeWidth={3} />
                     <span>{company.employee_count} employees</span>
                   </div>
                 )}
@@ -134,13 +134,13 @@ export default function CompanyDetailPage({
 
               <div className="flex items-center gap-3 flex-wrap">
                 <CategoryTag category={company.category} />
-                <span className="px-2.5 py-0.5 bg-blue-500/10 text-blue-300 text-xs rounded-md border border-blue-500/20">
+                <span className="brutal-tag bg-[#0066ff] text-white">
                   {company.stage}
                 </span>
                 {company.is_unicorn && (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-500/10 text-amber-300 text-xs rounded-md border border-amber-500/20">
-                    <Crown className="w-3 h-3" />
-                    Unicorn
+                  <span className="brutal-tag bg-[#ffe500] inline-flex items-center gap-1.5">
+                    <Crown className="w-3 h-3" strokeWidth={3} />
+                    UNICORN
                   </span>
                 )}
               </div>
@@ -153,11 +153,11 @@ export default function CompanyDetailPage({
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/[0.08]">
+                  <tr className="border-b-[3px] border-black">
                     {['Round', 'Date', 'Amount', 'Lead Investor'].map((col) => (
                       <th
                         key={col}
-                        className="text-left py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider"
+                        className="text-left py-3 px-4 text-xs font-black text-muted uppercase tracking-wider"
                       >
                         {col}
                       </th>
@@ -166,17 +166,17 @@ export default function CompanyDetailPage({
                 </thead>
                 <tbody>
                   {company.funding_rounds.map((round: { id: string; round_type: string; announced_date: string; amount: number; lead_investor?: { name: string } }) => (
-                    <tr key={round.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3.5 px-4 font-medium text-foreground text-sm">
+                    <tr key={round.id} className="border-b-[2px] border-black/10 hover:bg-[#ffe500]/20 transition-colors">
+                      <td className="py-3.5 px-4 font-black text-foreground text-sm uppercase">
                         {round.round_type}
                       </td>
-                      <td className="py-3.5 px-4 text-zinc-500 text-sm">
+                      <td className="py-3.5 px-4 text-muted text-sm font-bold">
                         {new Date(round.announced_date).toLocaleDateString()}
                       </td>
-                      <td className="py-3.5 px-4 text-foreground text-sm font-mono">
+                      <td className="py-3.5 px-4 text-foreground text-sm font-mono font-black">
                         ${(round.amount / 1e6).toFixed(0)}M
                       </td>
-                      <td className="py-3.5 px-4 text-zinc-500 text-sm">
+                      <td className="py-3.5 px-4 text-muted text-sm font-bold">
                         {round.lead_investor?.name || 'Undisclosed'}
                       </td>
                     </tr>
@@ -200,15 +200,16 @@ export default function CompanyDetailPage({
                     `${name} ${((percent || 0) * 100).toFixed(0)}%`
                   }
                   outerRadius={90}
-                  fill="#8884d8"
+                  fill="#0066ff"
                   dataKey="value"
-                  stroke="transparent"
+                  stroke="#0a0a0a"
+                  strokeWidth={2}
                 >
                   {ownershipData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Legend wrapperStyle={{ color: '#a1a1aa', fontSize: 12 }} />
+                <Legend wrapperStyle={{ color: '#525252', fontSize: 12, fontWeight: 700 }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -218,17 +219,17 @@ export default function CompanyDetailPage({
           <Section title="Founders & Leadership">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {company.founders.map((founder) => (
-                <div key={founder.id} className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500/30 to-violet-500/30 border border-white/[0.08] flex items-center justify-center flex-shrink-0">
-                    <span className="text-foreground font-semibold text-lg">
+                <div key={founder.id} className="flex items-start gap-4 p-4 surface-card bg-[#f4f0e8]">
+                  <div className="w-14 h-14 bg-black text-white border-[3px] border-black shadow-[3px_3px_0_#0a0a0a] flex items-center justify-center flex-shrink-0">
+                    <span className="font-black text-lg">
                       {founder.name.charAt(0)}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground tracking-tight">{founder.name}</h3>
-                    <p className="text-sm text-zinc-500">{founder.title}</p>
+                    <h3 className="font-black uppercase text-foreground tracking-tight">{founder.name}</h3>
+                    <p className="text-sm text-muted font-bold uppercase">{founder.title}</p>
                     {founder.bio && (
-                      <p className="text-sm text-zinc-600 mt-1 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-muted mt-1 line-clamp-2 leading-relaxed font-medium">
                         {founder.bio}
                       </p>
                     )}
@@ -259,17 +260,17 @@ export default function CompanyDetailPage({
                 <Link
                   key={investor.id}
                   href={`/investors/${investor.slug}`}
-                  className="surface-card p-4 card-hover text-center group"
+                  className="surface-card p-4 card-hover text-center group bg-white"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-white/[0.08] mx-auto mb-2 flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <span className="text-foreground font-semibold">
+                  <div className="w-11 h-11 bg-[#0066ff] text-white border-[3px] border-black shadow-[3px_3px_0_#0a0a0a] mx-auto mb-2 flex items-center justify-center group-hover:bg-[#ffe500] group-hover:text-black transition-colors">
+                    <span className="font-black">
                       {investor.name.charAt(0)}
                     </span>
                   </div>
-                  <p className="text-sm font-medium text-foreground truncate">
+                  <p className="text-sm font-black uppercase text-foreground truncate">
                     {investor.name}
                   </p>
-                  <p className="text-xs text-zinc-600">{investor.type}</p>
+                  <p className="text-xs text-muted font-bold uppercase">{investor.type}</p>
                 </Link>
               ))}
             </div>
@@ -285,15 +286,15 @@ export default function CompanyDetailPage({
                   href={article.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block p-4 rounded-xl border border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.02] transition-all group"
+                  className="block p-4 surface-card card-hover bg-white group"
                 >
-                  <h3 className="font-medium text-foreground mb-1 group-hover:text-indigo-300 transition-colors">
+                  <h3 className="font-black uppercase text-foreground mb-1 group-hover:text-[#0066ff] transition-colors text-sm">
                     {article.title}
                   </h3>
-                  <p className="text-sm text-zinc-500 mb-2 line-clamp-2">{article.summary}</p>
-                  <div className="flex items-center gap-2 text-xs text-zinc-600">
+                  <p className="text-sm text-muted mb-2 line-clamp-2 font-medium">{article.summary}</p>
+                  <div className="flex items-center gap-2 text-xs text-muted font-bold uppercase">
                     <span>{article.source}</span>
-                    <span className="text-zinc-700">·</span>
+                    <span>·</span>
                     <span>{new Date(article.published_at).toLocaleDateString()}</span>
                   </div>
                 </a>
@@ -315,7 +316,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       transition={{ duration: 0.4 }}
       className="surface-card p-6 md:p-8 mb-6"
     >
-      <h2 className="text-xl font-bold tracking-tight mb-6">{title}</h2>
+      <h2 className="text-xl font-black uppercase tracking-tight mb-6">{title}</h2>
       {children}
     </motion.div>
   );

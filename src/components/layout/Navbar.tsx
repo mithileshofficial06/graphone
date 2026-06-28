@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -19,7 +19,6 @@ const navLinks = [
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -30,47 +29,36 @@ export default function Navbar() {
       }
     };
 
-    const handleScroll = () => setScrolled(window.scrollY > 8);
-
     document.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
   return (
-    <nav
-      className={cn(
-        'sticky top-0 z-50 transition-all duration-300',
-        scrolled
-          ? 'glass border-b border-white/[0.08] shadow-lg shadow-black/20'
-          : 'bg-transparent border-b border-transparent'
-      )}
-    >
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="section-container">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
-              <span className="text-white font-bold text-sm tracking-tight">G</span>
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300 -z-10" />
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
+              <span className="text-white font-semibold text-sm">G</span>
             </div>
-            <span className="text-lg font-bold tracking-tight text-foreground">
-              GraphOne
-            </span>
+            <span className="text-lg font-semibold text-gray-900">GraphOne</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'px-3.5 py-2 text-sm font-medium rounded-lg transition-colors duration-200',
-                  pathname === link.href
-                    ? 'text-foreground bg-white/[0.06]'
-                    : 'text-zinc-400 hover:text-foreground hover:bg-white/[0.04]'
+                  'text-sm transition-colors duration-200',
+                  isActive(link.href)
+                    ? 'text-red-500 font-medium'
+                    : 'text-gray-600 hover:text-gray-900'
                 )}
               >
                 {link.label}
@@ -80,32 +68,32 @@ export default function Navbar() {
 
           <div className="hidden lg:flex flex-1 max-w-sm mx-8">
             <div className="relative w-full">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 id="search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search companies, investors..."
-                className="w-full pl-10 pr-12 py-2 text-sm bg-white/[0.04] border border-white/[0.08] rounded-lg text-foreground placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full pl-10 pr-12 py-2 text-sm bg-white border border-gray-300 rounded-full text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
               />
-              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-500 bg-white/[0.06] border border-white/[0.08] rounded">
+              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 bg-gray-100 border border-gray-200 rounded">
                 /
               </kbd>
             </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
-            <button className="px-4 py-2 text-sm font-medium text-zinc-400 hover:text-foreground transition-colors">
+          <div className="hidden md:flex items-center gap-4">
+            <button className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors">
               Log In
             </button>
-            <button className="btn-primary text-sm px-4 py-2">
+            <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
               Sign Up
             </button>
           </div>
 
           <button
-            className="md:hidden p-2 text-zinc-400 hover:text-foreground transition-colors"
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           >
@@ -121,7 +109,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden border-t border-white/[0.08] glass overflow-hidden"
+            className="md:hidden border-t border-gray-200 bg-white overflow-hidden"
           >
             <div className="section-container py-4 space-y-1">
               {navLinks.map((link) => (
@@ -129,21 +117,21 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'block px-4 py-2.5 text-sm font-medium rounded-lg transition-colors',
-                    pathname === link.href
-                      ? 'text-foreground bg-white/[0.06]'
-                      : 'text-zinc-400 hover:text-foreground hover:bg-white/[0.04]'
+                    'block px-4 py-2.5 text-sm rounded-lg transition-colors',
+                    isActive(link.href)
+                      ? 'text-red-500 font-medium bg-red-50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4 mt-2 border-t border-white/[0.08] space-y-2">
-                <button className="w-full btn-secondary py-2.5">
+              <div className="pt-4 mt-2 border-t border-gray-200 space-y-2">
+                <button className="w-full py-2.5 text-sm text-gray-700 font-medium border border-gray-200 rounded-lg hover:bg-gray-50">
                   Log In
                 </button>
-                <button className="w-full btn-primary py-2.5">
+                <button className="w-full py-2.5 text-sm bg-red-500 text-white font-medium rounded-lg hover:bg-red-600">
                   Sign Up
                 </button>
               </div>

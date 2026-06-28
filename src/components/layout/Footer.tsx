@@ -1,21 +1,21 @@
 import Link from 'next/link';
 
 const footerLinks = {
-  platform: [
+  Platform: [
     { href: '/', label: 'AI Companies' },
     { href: '/investors', label: 'Investors' },
     { href: '/products', label: 'AI Products' },
     { href: '/funding', label: 'Funding Rounds' },
     { href: '/jobs', label: 'AI Jobs' },
   ],
-  resources: [
+  Resources: [
     { href: '/blog', label: 'Blog' },
     { href: '/newsletter', label: 'Newsletter' },
     { href: '/reports', label: 'Reports' },
     { href: '/api', label: 'API' },
     { href: '/help', label: 'Help Center' },
   ],
-  company: [
+  Company: [
     { href: '/about', label: 'About Us' },
     { href: '/careers', label: 'Careers' },
     { href: '/privacy', label: 'Privacy' },
@@ -26,32 +26,30 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/[0.08] bg-zinc-950">
-      <div className="section-container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
-          <div className="lg:col-span-1">
+    <footer className="bg-gray-900 text-white">
+      <div className="section-container py-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">G</span>
+              <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">G</span>
               </div>
-              <span className="text-lg font-bold tracking-tight">GraphOne</span>
+              <span className="text-lg font-semibold text-white">GraphOne</span>
             </div>
-            <p className="text-zinc-500 text-sm leading-relaxed max-w-xs">
+            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               The global intelligence layer for the AI economy.
             </p>
           </div>
 
-          {Object.entries(footerLinks).map(([key, links]) => (
-            <div key={key}>
-              <h3 className="text-sm font-semibold text-foreground mb-4 capitalize">
-                {key}
-              </h3>
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title}>
+              <h3 className="text-sm font-semibold text-white mb-4">{title}</h3>
               <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-zinc-500 hover:text-foreground transition-colors duration-200"
+                      className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
                     >
                       {link.label}
                     </Link>
@@ -60,33 +58,16 @@ export default function Footer() {
               </ul>
             </div>
           ))}
-
-          <div>
-            <h3 className="text-sm font-semibold text-foreground mb-4">Newsletter</h3>
-            <p className="text-zinc-500 text-sm mb-4 leading-relaxed">
-              Weekly AI insights and funding updates
-            </p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 px-3 py-2.5 text-sm bg-white/[0.04] border border-white/[0.08] rounded-l-lg text-foreground placeholder:text-zinc-600 focus:outline-none focus:border-indigo-500/50"
-              />
-              <button className="px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-r-lg hover:opacity-90 transition-opacity text-sm font-medium">
-                Subscribe
-              </button>
-            </div>
-          </div>
         </div>
 
-        <div className="border-t border-white/[0.08] mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-zinc-600 text-sm">
+        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm">
             &copy; {new Date().getFullYear()} GraphOne. All rights reserved.
           </p>
           <div className="flex gap-4">
             <Link
               href="/twitter"
-              className="text-zinc-500 hover:text-foreground transition-colors p-2 rounded-lg hover:bg-white/[0.04]"
+              className="text-gray-400 hover:text-white transition-colors"
               aria-label="Twitter"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -95,7 +76,7 @@ export default function Footer() {
             </Link>
             <Link
               href="/linkedin"
-              className="text-zinc-500 hover:text-foreground transition-colors p-2 rounded-lg hover:bg-white/[0.04]"
+              className="text-gray-400 hover:text-white transition-colors"
               aria-label="LinkedIn"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
