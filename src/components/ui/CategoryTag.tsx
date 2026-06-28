@@ -1,23 +1,25 @@
+import { cn } from '@/lib/utils';
+
 interface CategoryTagProps {
   category: string;
 }
 
-export default function CategoryTag({ category }: CategoryTagProps) {
-  const colorMap: Record<string, string> = {
-    'AI Agents': 'bg-purple-50 text-purple-700',
-    'AI Coding': 'bg-blue-50 text-blue-700',
-    'AI Search': 'bg-green-50 text-green-700',
-    'AI Video': 'bg-pink-50 text-pink-700',
-    'AI Voice': 'bg-orange-50 text-orange-700',
-    'AI Infrastructure': 'bg-gray-50 text-gray-700',
-    'Healthcare AI': 'bg-red-50 text-red-700',
-    'Robotics': 'bg-yellow-50 text-yellow-700',
-  };
+const colorMap: Record<string, string> = {
+  'AI Agents': 'bg-violet-500/10 text-violet-300 border-violet-500/20',
+  'AI Coding': 'bg-blue-500/10 text-blue-300 border-blue-500/20',
+  'AI Search': 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  'AI Video': 'bg-pink-500/10 text-pink-300 border-pink-500/20',
+  'AI Voice': 'bg-orange-500/10 text-orange-300 border-orange-500/20',
+  'AI Infrastructure': 'bg-zinc-500/10 text-zinc-300 border-zinc-500/20',
+  'Healthcare AI': 'bg-rose-500/10 text-rose-300 border-rose-500/20',
+  'Robotics': 'bg-amber-500/10 text-amber-300 border-amber-500/20',
+};
 
-  const colorClass = colorMap[category] || 'bg-gray-50 text-gray-700';
+export default function CategoryTag({ category }: CategoryTagProps) {
+  const colorClass = colorMap[category] || 'bg-zinc-500/10 text-zinc-300 border-zinc-500/20';
 
   return (
-    <span className={`px-2 py-1 text-xs rounded ${colorClass}`}>
+    <span className={cn('px-2 py-0.5 text-xs rounded-md border', colorClass)}>
       {category}
     </span>
   );

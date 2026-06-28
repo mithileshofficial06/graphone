@@ -1,4 +1,4 @@
-import { Flame } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 
 interface TrendingBadgeProps {
   rank: number;
@@ -6,9 +6,9 @@ interface TrendingBadgeProps {
 
 export default function TrendingBadge({ rank }: TrendingBadgeProps) {
   return (
-    <div className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-semibold rounded-full">
-      <Flame className="w-4 h-4" />
-      <span>Trending #{rank}</span>
+    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-semibold rounded-full shadow-lg shadow-indigo-500/25">
+      <TrendingUp className="w-3 h-3" />
+      <span>#{rank}</span>
     </div>
   );
 }

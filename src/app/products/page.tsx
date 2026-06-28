@@ -2,15 +2,36 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Search, Heart, MessageSquare, Home, Building2, TrendingUp, Briefcase, Newspaper, Plus } from 'lucide-react';
-import ProductCard from '@/components/ui/ProductCard';
+import { motion } from 'framer-motion';
+import {
+  Search,
+  Heart,
+  MessageSquare,
+  Home,
+  Building2,
+  TrendingUp,
+  Briefcase,
+  Newspaper,
+  Plus,
+  ArrowUpRight,
+  Sparkles,
+} from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
 import { ProductWithRelations } from '@/types';
+import { cn } from '@/lib/utils';
 
 const categories = ['All', 'Chat', 'Code', 'Agents', 'Image', 'Video', 'Voice', 'Productivity', 'More'];
-
 const mostSearched = ['ChatGPT', 'Claude', 'Midjourney', 'Cursor', 'Perplexity'];
+
+const sidebarLinks = [
+  { href: '/', icon: Home, label: 'Home' },
+  { href: '/', icon: Building2, label: 'AI Startups' },
+  { href: '/products', icon: TrendingUp, label: 'AI Products', active: true },
+  { href: '/investors', icon: Briefcase, label: 'Investors' },
+  { href: '/jobs', icon: Briefcase, label: 'Jobs' },
+  { href: '/news', icon: Newspaper, label: 'News' },
+];
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<ProductWithRelations[]>([]);
@@ -26,10 +47,11 @@ export default function ProductsPage() {
     try {
       setLoading(true);
       setError(null);
-      const url = activeCategory === 'All'
-        ? '/api/products?sort=popular&limit=20'
-        : `/api/products?category=${encodeURIComponent(activeCategory)}&sort=popular&limit=20`;
-      
+      const url =
+        activeCategory === 'All'
+          ? '/api/products?sort=popular&limit=20'
+          : `/api/products?category=${encodeURIComponent(activeCategory)}&sort=popular&limit=20`;
+
       const res = await fetch(url);
       const data = await res.json();
 
@@ -50,132 +72,124 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="flex">
         {/* Left Sidebar */}
-        <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 min-h-screen sticky top-16">
-          <nav className="p-6 space-y-1">
-            <Link
-              href="/"
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <Home className="w-5 h-5" />
-              <span>Home</span>
-            </Link>
-            <Link
-              href="/"
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <Building2 className="w-5 h-5" />
-              <span>AI Startups</span>
-            </Link>
-            <Link
-              href="/products"
-              className="flex items-center gap-3 px-4 py-2 bg-red-50 text-red-600 rounded-lg font-medium"
-            >
-              <TrendingUp className="w-5 h-5" />
-              <span>AI Products</span>
-            </Link>
-            <Link
-              href="/investors"
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <Briefcase className="w-5 h-5" />
-              <span>Investors</span>
-            </Link>
-            <Link
-              href="/jobs"
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <Briefcase className="w-5 h-5" />
-              <span>Jobs</span>
-            </Link>
-            <Link
-              href="/news"
-              className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
-              <Newspaper className="w-5 h-5" />
-              <span>News</span>
-            </Link>
+        <aside className="hidden lg:block w-60 border-r border-white/[0.06] min-h-[calc(100vh-4rem)] sticky top-16">
+          <nav className="p-5 space-y-0.5">
+            {sidebarLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors',
+                    link.active
+                      ? 'bg-indigo-500/10 text-indigo-300 font-medium border border-indigo-500/20'
+                      : 'text-zinc-500 hover:text-foreground hover:bg-white/[0.04]'
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
 
-            <div className="pt-4 border-t border-gray-200 mt-4">
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-medium">
-                <Plus className="w-5 h-5" />
-                <span>Submit Startup</span>
+            <div className="pt-4 mt-4 border-t border-white/[0.06] space-y-0.5">
+              <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors font-medium">
+                <Plus className="w-4 h-4" />
+                Submit Startup
               </button>
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-medium mt-1">
-                <Plus className="w-5 h-5" />
-                <span>Submit Product</span>
+              <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors font-medium">
+                <Plus className="w-4 h-4" />
+                Submit Product
               </button>
             </div>
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            {/* Hero */}
-            <div className="mb-12">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <main className="flex-1 min-w-0">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-12"
+            >
+              <div className="section-label mb-3">
+                <Sparkles className="w-3.5 h-3.5" />
+                Product Directory
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
                 The Global Intelligence Layer for AI
               </h1>
-              <p className="text-xl text-gray-600 mb-8">
+              <p className="text-zinc-500 mb-8 leading-relaxed">
                 Discover the best AI products, tools, and applications
               </p>
 
-              {/* Search */}
-              <div className="flex gap-2 mb-6">
+              <div className="flex gap-2 p-1.5 surface-card rounded-xl mb-6">
                 <input
                   type="text"
                   placeholder="Search AI products..."
-                  className="flex-1 px-6 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="flex-1 px-4 py-2.5 bg-transparent text-foreground placeholder:text-zinc-600 focus:outline-none text-sm"
                 />
-                <button className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium flex items-center gap-2">
-                  <Search className="w-5 h-5" />
+                <button className="btn-primary px-4 py-2.5 rounded-lg">
+                  <Search className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Most Searched */}
-              <div className="flex flex-wrap gap-2">
-                <span className="text-sm text-gray-600">Most searched:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs text-zinc-600 uppercase tracking-wider">Popular:</span>
                 {mostSearched.map((term) => (
                   <button
                     key={term}
-                    className="px-3 py-1 bg-white border border-gray-300 rounded-full hover:border-red-500 hover:text-red-500 text-sm"
+                    className="px-3 py-1 text-xs font-medium text-zinc-400 bg-white/[0.04] border border-white/[0.08] rounded-full hover:border-indigo-500/30 hover:text-indigo-300 transition-all"
                   >
                     {term}
                   </button>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             {/* Collection of the Week */}
-            <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-8 text-white mb-8">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm font-medium">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-indigo-950/60 to-violet-950/60 p-8 mb-8"
+            >
+              <div className="hero-glow top-0 right-0 translate-x-1/4 -translate-y-1/4 opacity-40" />
+              <div className="relative">
+                <span className="inline-block px-3 py-1 bg-white/[0.08] border border-white/[0.1] rounded-full text-xs font-medium text-indigo-300 mb-3">
                   Collection of the Week
                 </span>
+                <h2 className="text-2xl font-bold tracking-tight mb-2">
+                  Top AI Coding Assistants
+                </h2>
+                <p className="text-zinc-400 mb-5 text-sm leading-relaxed">
+                  The best AI tools to supercharge your development workflow
+                </p>
+                <button className="btn-secondary text-sm">
+                  Explore Collection
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
               </div>
-              <h2 className="text-3xl font-bold mb-2">Top AI Coding Assistants</h2>
-              <p className="text-white text-opacity-90 mb-4">
-                The best AI tools to supercharge your development workflow
-              </p>
-              <button className="px-6 py-2 bg-white text-purple-600 rounded-lg hover:bg-gray-100 font-medium">
-                Explore Collection →
-              </button>
-            </div>
+            </motion.div>
 
             {/* Category Tabs */}
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+            <div className="flex gap-1.5 mb-8 overflow-x-auto pb-2 scrollbar-none">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap ${
+                  className={cn(
+                    'px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all',
                     activeCategory === category
-                      ? 'bg-red-500 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                  }`}
+                      ? 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30'
+                      : 'text-zinc-500 hover:text-foreground bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.1]'
+                  )}
                 >
                   {category}
                 </button>
@@ -183,21 +197,21 @@ export default function ProductsPage() {
             </div>
 
             {/* Popular Right Now */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Popular Right Now</h2>
-              <div className="flex gap-4 overflow-x-auto pb-4">
+            <div className="mb-10">
+              <h2 className="text-lg font-semibold tracking-tight mb-4">Popular Right Now</h2>
+              <div className="flex gap-4 overflow-x-auto pb-2">
                 {products.slice(0, 6).map((product) => (
                   <Link
                     key={product.id}
                     href={`/products/${product.slug}`}
-                    className="flex-shrink-0 w-32 text-center"
+                    className="flex-shrink-0 w-28 text-center group"
                   >
-                    <div className="w-32 h-32 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg mb-3 flex items-center justify-center">
-                      <span className="text-white font-bold text-4xl">
+                    <div className="w-28 h-28 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-white/[0.08] mb-2 flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <span className="text-foreground font-bold text-3xl">
                         {product.name.charAt(0)}
                       </span>
                     </div>
-                    <p className="text-sm font-semibold text-gray-900 truncate">
+                    <p className="text-xs font-medium text-foreground truncate">
                       {product.name}
                     </p>
                   </Link>
@@ -208,8 +222,8 @@ export default function ProductsPage() {
             {/* Product List */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">All Products</h2>
-                <select className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                <h2 className="text-lg font-semibold tracking-tight">All Products</h2>
+                <select className="px-3 py-2 text-sm bg-white/[0.04] border border-white/[0.08] rounded-lg text-zinc-400 focus:outline-none focus:border-indigo-500/50">
                   <option>Most upvoted</option>
                   <option>Newest</option>
                   <option>Most discussed</option>
@@ -219,50 +233,56 @@ export default function ProductsPage() {
               {loading ? (
                 <LoadingSpinner />
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {products.map((product, index) => (
-                    <div key={product.id} className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.04, duration: 0.3 }}
+                      className="surface-card p-5 card-hover"
+                    >
                       <div className="flex items-start gap-4">
-                        <div className="flex flex-col items-center gap-1 min-w-[60px]">
-                          <button className="p-2 hover:bg-red-50 rounded-lg">
-                            <Heart className="w-6 h-6 text-red-500" />
+                        <div className="flex flex-col items-center gap-0.5 min-w-[52px] px-2 py-2 rounded-lg bg-white/[0.04] border border-white/[0.06]">
+                          <button className="p-1 hover:text-rose-400 transition-colors text-zinc-500">
+                            <Heart className="w-4 h-4" />
                           </button>
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-xs font-semibold text-foreground font-mono">
                             {product.upvotes}
                           </span>
                         </div>
 
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-4">
                             <div>
                               <Link
                                 href={`/products/${product.slug}`}
-                                className="text-xl font-semibold text-gray-900 hover:text-red-500"
+                                className="text-base font-semibold text-foreground hover:text-indigo-300 transition-colors tracking-tight"
                               >
                                 {product.name}
                               </Link>
-                              <p className="text-gray-600 mt-1">{product.description}</p>
-                              <div className="flex items-center gap-3 mt-3">
-                                <span className="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded">
+                              <p className="text-sm text-zinc-500 mt-1 leading-relaxed">
+                                {product.description}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                                <span className="px-2 py-0.5 bg-violet-500/10 text-violet-300 text-xs rounded-md border border-violet-500/20">
                                   {product.category}
                                 </span>
                                 {product.company && (
-                                  <span className="text-sm text-gray-500">
+                                  <span className="text-xs text-zinc-600">
                                     by {product.company.name}
                                   </span>
                                 )}
                               </div>
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <div className="flex items-center gap-1">
-                                <MessageSquare className="w-4 h-4" />
-                                <span>{Math.floor(Math.random() * 50) + 10}</span>
-                              </div>
+                            <div className="flex items-center gap-1 text-xs text-zinc-600 flex-shrink-0">
+                              <MessageSquare className="w-3.5 h-3.5" />
+                              <span>{Math.floor(Math.random() * 50) + 10}</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -271,51 +291,54 @@ export default function ProductsPage() {
         </main>
 
         {/* Right Sidebar */}
-        <aside className="hidden xl:block w-80 bg-white border-l border-gray-200 p-6 sticky top-16 h-screen overflow-y-auto">
-          {/* Product of the Day */}
+        <aside className="hidden xl:block w-72 border-l border-white/[0.06] p-5 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="mb-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Product of the Day</h3>
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-lg border border-orange-200">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg mb-3 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">C</span>
+            <h3 className="text-sm font-semibold text-foreground mb-4 tracking-tight">
+              Product of the Day
+            </h3>
+            <div className="surface-card p-5 border-amber-500/20">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/20 mb-3 flex items-center justify-center">
+                <span className="text-foreground font-bold text-xl">C</span>
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">ChatGPT Plus</h4>
-              <p className="text-sm text-gray-600 mb-3">
+              <h4 className="font-semibold text-foreground mb-1.5 tracking-tight">ChatGPT Plus</h4>
+              <p className="text-xs text-zinc-500 mb-4 leading-relaxed">
                 Advanced AI assistant with faster response times
               </p>
-              <button className="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium text-sm">
+              <button className="w-full btn-primary text-xs py-2">
                 Learn More
               </button>
             </div>
           </div>
 
-          {/* Trending Searches */}
           <div className="mb-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Trending Searches</h3>
-            <div className="space-y-2">
-              {['AI coding', 'Image generation', 'Voice cloning', 'Video editing', 'Text to speech'].map((search) => (
-                <button
-                  key={search}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg"
-                >
-                  {search}
-                </button>
-              ))}
+            <h3 className="text-sm font-semibold text-foreground mb-3 tracking-tight">
+              Trending Searches
+            </h3>
+            <div className="space-y-0.5">
+              {['AI coding', 'Image generation', 'Voice cloning', 'Video editing', 'Text to speech'].map(
+                (search) => (
+                  <button
+                    key={search}
+                    className="w-full text-left px-3 py-2 text-xs text-zinc-500 hover:text-foreground hover:bg-white/[0.04] rounded-lg transition-colors"
+                  >
+                    {search}
+                  </button>
+                )
+              )}
             </div>
           </div>
 
-          {/* Newsletter */}
-          <div className="bg-gray-900 text-white p-6 rounded-lg">
-            <h3 className="font-bold mb-2">Weekly AI Digest</h3>
-            <p className="text-sm text-gray-300 mb-4">
+          <div className="surface-card p-5 bg-gradient-to-br from-indigo-950/40 to-violet-950/40">
+            <h3 className="font-semibold text-sm mb-1.5 tracking-tight">Weekly AI Digest</h3>
+            <p className="text-xs text-zinc-500 mb-4 leading-relaxed">
               Get the best AI products delivered to your inbox
             </p>
             <input
               type="email"
               placeholder="Your email"
-              className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm mb-2"
+              className="w-full px-3 py-2 rounded-lg bg-white/[0.06] border border-white/[0.08] focus:outline-none focus:border-indigo-500/50 text-xs mb-2 text-foreground placeholder:text-zinc-600"
             />
-            <button className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium text-sm">
+            <button className="w-full btn-primary text-xs py-2">
               Subscribe
             </button>
           </div>

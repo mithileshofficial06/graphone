@@ -3,11 +3,14 @@
 import { useEffect, useState } from 'react';
 import { use } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Calendar, TrendingUp, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, TrendingUp, Users } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
 import { InvestorWithRelations } from '@/types';
+
+const CHART_COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'];
 
 export default function InvestorDetailPage({
   params,
@@ -46,74 +49,81 @@ export default function InvestorDetailPage({
   if (error) return <ErrorState message={error} onRetry={fetchInvestor} />;
   if (!investor) return <ErrorState message="Investor not found" />;
 
-  // Mock portfolio concentration data
   const portfolioData = [
-    { name: 'AI Infrastructure', value: 35, color: '#6366F1' },
-    { name: 'AI Agents', value: 22, color: '#8B5CF6' },
-    { name: 'Healthcare AI', value: 18, color: '#EC4899' },
-    { name: 'Enterprise AI', value: 15, color: '#10B981' },
-    { name: 'Other', value: 10, color: '#F59E0B' },
+    { name: 'AI Infrastructure', value: 35, color: CHART_COLORS[0] },
+    { name: 'AI Agents', value: 22, color: CHART_COLORS[1] },
+    { name: 'Healthcare AI', value: 18, color: CHART_COLORS[2] },
+    { name: 'Enterprise AI', value: 15, color: CHART_COLORS[3] },
+    { name: 'Other', value: 10, color: CHART_COLORS[4] },
+  ];
+
+  const stats = [
+    { label: 'Deals last 90 days', value: '12' },
+    { label: 'Lead investments', value: '45' },
+    { label: 'Most active stage', value: 'Series A' },
+    { label: 'Top partner', value: 'Sarah Chen' },
+    { label: 'Top focus area', value: 'AI Infrastructure' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
+    <div className="min-h-screen">
+      <div className="section-container py-8 md:py-12">
         <Link
           href="/investors"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
+          className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-foreground mb-8 transition-colors group"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to investors
         </Link>
 
-        {/* Investor Header */}
-        <div className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-          <div className="flex items-start gap-6">
-            {/* Logo */}
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="surface-card p-6 md:p-8 mb-6"
+        >
+          <div className="flex flex-col sm:flex-row items-start gap-6">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
               <span className="text-white font-bold text-3xl">
                 {investor.name.charAt(0)}
               </span>
             </div>
 
-            {/* Info */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
                     {investor.name}
                   </h1>
-                  <p className="text-xl text-gray-600">{investor.investment_thesis}</p>
+                  <p className="text-lg text-zinc-500">{investor.investment_thesis}</p>
                 </div>
-                <button className="px-6 py-2 border-2 border-red-500 text-red-500 rounded-lg hover:bg-red-50 font-medium">
+                <button className="btn-secondary text-sm flex-shrink-0 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10">
                   Follow Investor
                 </button>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
-                <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-medium">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-500 mb-4">
+                <span className="px-2.5 py-0.5 bg-indigo-500/10 text-indigo-300 text-xs rounded-md border border-indigo-500/20 font-medium">
                   {investor.type}
                 </span>
                 {investor.aum && (
-                  <div className="flex items-center gap-1">
-                    <TrendingUp className="w-4 h-4" />
-                    <span>${(investor.aum / 1e9).toFixed(1)}B AUM</span>
+                  <div className="flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    <span className="font-mono">${(investor.aum / 1e9).toFixed(1)}B AUM</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
+                <div className="flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" />
                   <span>{investor.portfolio_count} portfolio companies</span>
                 </div>
               </div>
 
-              {/* Stage Focus Tags */}
               {investor.stage_focus && investor.stage_focus.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {investor.stage_focus.map((stage) => (
                     <span
                       key={stage}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded"
+                      className="px-2.5 py-0.5 bg-white/[0.06] text-zinc-400 text-xs rounded-md border border-white/[0.06]"
                     >
                       {stage}
                     </span>
@@ -123,54 +133,34 @@ export default function InvestorDetailPage({
             </div>
           </div>
 
-          {/* Stats Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8 pt-8 border-t border-gray-200">
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Deals last 90 days</p>
-              <p className="text-2xl font-bold text-gray-900">12</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Lead investments</p>
-              <p className="text-2xl font-bold text-gray-900">45</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Most active stage</p>
-              <p className="text-2xl font-bold text-gray-900">Series A</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Top partner</p>
-              <p className="text-2xl font-bold text-gray-900">Sarah Chen</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-1">Top focus area</p>
-              <p className="text-2xl font-bold text-gray-900">AI Infrastructure</p>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8 pt-8 border-t border-white/[0.08]">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <p className="text-xs text-zinc-600 mb-1 uppercase tracking-wider">{stat.label}</p>
+                <p className="text-xl font-bold text-foreground tracking-tight">{stat.value}</p>
+              </div>
+            ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Investment Thesis */}
         {investor.sector_focus && investor.sector_focus.length > 0 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Investment Thesis</h2>
-            <p className="text-gray-700 mb-6">{investor.investment_thesis}</p>
-
+          <Section title="Investment Thesis">
+            <p className="text-zinc-400 mb-6 leading-relaxed">{investor.investment_thesis}</p>
             <div className="flex flex-wrap gap-2">
               {investor.sector_focus.map((sector) => (
                 <span
                   key={sector}
-                  className="px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium"
+                  className="px-3 py-1.5 bg-violet-500/10 text-violet-300 text-sm rounded-lg border border-violet-500/20 font-medium"
                 >
                   {sector}
                 </span>
               ))}
             </div>
-          </div>
+          </Section>
         )}
 
-        {/* Portfolio Concentration Chart */}
-        <div className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Portfolio Concentration</h2>
-          <div className="h-80">
+        <Section title="Portfolio Concentration">
+          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -178,90 +168,84 @@ export default function InvestorDetailPage({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                  outerRadius={100}
+                  label={({ name, percent }) =>
+                    `${name} ${((percent || 0) * 100).toFixed(0)}%`
+                  }
+                  outerRadius={90}
                   fill="#8884d8"
                   dataKey="value"
+                  stroke="transparent"
                 >
                   {portfolioData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Legend />
+                <Legend wrapperStyle={{ color: '#a1a1aa', fontSize: 12 }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Section>
 
-        {/* Recent Investments */}
         {investor.recent_investments && investor.recent_investments.length > 0 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Investments</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {investor.recent_investments.slice(0, 6).map((investment: any) => (
+          <Section title="Recent Investments">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {investor.recent_investments.slice(0, 6).map((investment) => {
+                const item = investment as typeof investment & {
+                  company?: { name?: string; category?: string; stage?: string };
+                  funding_round?: { amount: number; round_type: string };
+                };
+                return (
                 <div
-                  key={investment.id}
-                  className="bg-gray-900 text-white p-6 rounded-lg"
+                  key={item.id}
+                  className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="font-bold text-xl">
-                        {investment.company?.name?.charAt(0) || 'C'}
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+                      <span className="font-semibold text-white text-lg">
+                        {item.company?.name?.charAt(0) || 'C'}
                       </span>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-white mb-1">
-                        {investment.company?.name || 'Company'}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-foreground tracking-tight mb-1">
+                        {item.company?.name || 'Company'}
                       </h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-300 mb-2">
-                        <span>{investment.company?.category}</span>
-                        <span>•</span>
-                        <span>{investment.company?.stage}</span>
+                      <div className="flex items-center gap-2 text-xs text-zinc-500 mb-2">
+                        <span>{item.company?.category}</span>
+                        <span className="text-zinc-700">·</span>
+                        <span>{item.company?.stage}</span>
                       </div>
-                      {investment.funding_round && (
-                        <p className="text-sm text-gray-400">
-                          ${(investment.funding_round.amount / 1e6).toFixed(0)}M •{' '}
-                          {investment.funding_round.round_type}
+                      {item.funding_round && (
+                        <p className="text-sm text-zinc-400 font-mono">
+                          ${(item.funding_round.amount / 1e6).toFixed(0)}M ·{' '}
+                          {item.funding_round.round_type}
                         </p>
                       )}
-                      {investment.investment_date && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          {new Date(investment.investment_date).toLocaleDateString()}
+                      {item.investment_date && (
+                        <p className="text-xs text-zinc-600 mt-1">
+                          {new Date(item.investment_date).toLocaleDateString()}
                         </p>
                       )}
                     </div>
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
-          </div>
+          </Section>
         )}
 
-        {/* Investment Velocity Table */}
-        <div className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Investment Velocity</h2>
+        <Section title="Investment Velocity">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                    Year
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                    Q1
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                    Q2
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                    Q3
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                    Q4
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                    Total
-                  </th>
+                <tr className="border-b border-white/[0.08]">
+                  {['Year', 'Q1', 'Q2', 'Q3', 'Q4', 'Total'].map((col) => (
+                    <th
+                      key={col}
+                      className="text-left py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider"
+                    >
+                      {col}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -270,13 +254,13 @@ export default function InvestorDetailPage({
                   { year: '2023', q1: 14, q2: 16, q3: 13, q4: 11 },
                   { year: '2022', q1: 10, q2: 12, q3: 14, q4: 15 },
                 ].map((row) => (
-                  <tr key={row.year} className="border-b border-gray-100">
-                    <td className="py-3 px-4 font-medium text-gray-900">{row.year}</td>
-                    <td className="py-3 px-4 text-gray-600">{row.q1}</td>
-                    <td className="py-3 px-4 text-gray-600">{row.q2}</td>
-                    <td className="py-3 px-4 text-gray-600">{row.q3}</td>
-                    <td className="py-3 px-4 text-gray-600">{row.q4 || '-'}</td>
-                    <td className="py-3 px-4 font-semibold text-gray-900">
+                  <tr key={row.year} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                    <td className="py-3.5 px-4 font-medium text-foreground text-sm">{row.year}</td>
+                    <td className="py-3.5 px-4 text-zinc-500 text-sm font-mono">{row.q1}</td>
+                    <td className="py-3.5 px-4 text-zinc-500 text-sm font-mono">{row.q2}</td>
+                    <td className="py-3.5 px-4 text-zinc-500 text-sm font-mono">{row.q3}</td>
+                    <td className="py-3.5 px-4 text-zinc-500 text-sm font-mono">{row.q4 || '—'}</td>
+                    <td className="py-3.5 px-4 font-semibold text-foreground text-sm font-mono">
                       {row.q1 + row.q2 + row.q3 + row.q4}
                     </td>
                   </tr>
@@ -284,49 +268,60 @@ export default function InvestorDetailPage({
               </tbody>
             </table>
           </div>
-        </div>
+        </Section>
 
-        {/* Follow-on Strength Stats */}
-        <div className="bg-white rounded-lg border border-gray-200 p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Follow-on Strength</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-green-50 rounded-lg">
-              <p className="text-4xl font-bold text-green-600 mb-2">82%</p>
-              <p className="text-sm text-gray-600">Raised Next Round</p>
+        <Section title="Follow-on Strength">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-6 rounded-xl bg-emerald-500/5 border border-emerald-500/15">
+              <p className="text-3xl font-bold text-emerald-400 mb-1 tracking-tight font-mono">82%</p>
+              <p className="text-sm text-zinc-500">Raised Next Round</p>
             </div>
-            <div className="text-center p-6 bg-blue-50 rounded-lg">
-              <p className="text-4xl font-bold text-blue-600 mb-2">14 months</p>
-              <p className="text-sm text-gray-600">Avg Time to Next Round</p>
+            <div className="text-center p-6 rounded-xl bg-blue-500/5 border border-blue-500/15">
+              <p className="text-3xl font-bold text-blue-400 mb-1 tracking-tight font-mono">14 months</p>
+              <p className="text-sm text-zinc-500">Avg Time to Next Round</p>
             </div>
-            <div className="text-center p-6 bg-purple-50 rounded-lg">
-              <p className="text-4xl font-bold text-purple-600 mb-2">3.2x</p>
-              <p className="text-sm text-gray-600">Avg Valuation Multiple</p>
+            <div className="text-center p-6 rounded-xl bg-violet-500/5 border border-violet-500/15">
+              <p className="text-3xl font-bold text-violet-400 mb-1 tracking-tight font-mono">3.2x</p>
+              <p className="text-sm text-zinc-500">Avg Valuation Multiple</p>
             </div>
           </div>
-        </div>
+        </Section>
 
-        {/* Co-investor Network */}
-        <div className="bg-white rounded-lg border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Co-investor Network</h2>
-          <p className="text-gray-600 mb-6">
+        <Section title="Co-investor Network">
+          <p className="text-zinc-500 mb-6 text-sm">
             Investors who frequently co-invest with {investor.name}
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {['Sequoia', 'Accel', 'Lightspeed', 'GV', 'Index', 'Founders Fund'].map((co) => (
               <div
                 key={co}
-                className="text-center p-4 border border-gray-200 rounded-lg hover:border-red-500 hover:shadow-lg transition-all"
+                className="surface-card p-4 card-hover text-center group cursor-default"
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-blue-500 rounded-lg mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-white font-bold">{co.charAt(0)}</span>
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-500/20 to-blue-500/20 border border-white/[0.08] mx-auto mb-2 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <span className="text-foreground font-semibold">{co.charAt(0)}</span>
                 </div>
-                <p className="text-sm font-medium text-gray-900 truncate">{co}</p>
-                <p className="text-xs text-gray-500">12 deals</p>
+                <p className="text-sm font-medium text-foreground truncate">{co}</p>
+                <p className="text-xs text-zinc-600 font-mono">12 deals</p>
               </div>
             ))}
           </div>
-        </div>
+        </Section>
       </div>
     </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4 }}
+      className="surface-card p-6 md:p-8 mb-6"
+    >
+      <h2 className="text-xl font-bold tracking-tight mb-6">{title}</h2>
+      {children}
+    </motion.div>
   );
 }

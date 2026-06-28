@@ -4,42 +4,60 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Company } from '@/types';
 import CategoryTag from './CategoryTag';
+import { cn } from '@/lib/utils';
 
 interface CompanyCardProps {
   company: Company;
 }
 
+const logoGradients = [
+  'from-indigo-500 to-violet-600',
+  'from-violet-500 to-purple-600',
+  'from-blue-500 to-indigo-600',
+  'from-cyan-500 to-blue-600',
+  'from-emerald-500 to-teal-600',
+  'from-rose-500 to-pink-600',
+  'from-amber-500 to-orange-600',
+  'from-fuchsia-500 to-purple-600',
+];
+
+function getLogoGradient(letter: string): string {
+  return logoGradients[letter.charCodeAt(0) % logoGradients.length];
+}
+
 export default function CompanyCard({ company }: CompanyCardProps) {
   const firstLetter = company.name.charAt(0).toUpperCase();
-  const logoColor = getLogoColor(firstLetter);
 
   return (
     <Link href={`/companies/${company.slug}`}>
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.2 }}
-        className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg cursor-pointer"
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="surface-card p-5 card-hover cursor-pointer h-full"
       >
-        <div className="flex items-start space-x-4">
-          {/* Logo */}
+        <div className="flex items-start gap-4">
           <div
-            className={`w-12 h-12 ${logoColor} rounded-lg flex items-center justify-center flex-shrink-0`}
+            className={cn(
+              'w-11 h-11 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0',
+              getLogoGradient(firstLetter)
+            )}
           >
-            <span className="text-white font-bold text-xl">{firstLetter}</span>
+            <span className="text-white font-semibold text-lg">{firstLetter}</span>
           </div>
 
-          {/* Content */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 truncate">{company.name}</h3>
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+            <h3 className="font-semibold text-foreground truncate tracking-tight">
+              {company.name}
+            </h3>
+            <p className="text-sm text-zinc-500 line-clamp-2 mt-1 leading-relaxed">
               {company.tagline || company.description}
             </p>
 
-            <div className="flex items-center gap-2 mt-3">
+            <div className="flex items-center gap-2 mt-3 flex-wrap">
               <CategoryTag category={company.category} />
               {company.valuation && (
-                <span className="text-xs text-gray-500">
-                  ${formatValuation(company.valuation)} raised
+                <span className="text-xs text-zinc-600 font-mono">
+                  ${formatValuation(company.valuation)}
                 </span>
               )}
             </div>
@@ -48,21 +66,6 @@ export default function CompanyCard({ company }: CompanyCardProps) {
       </motion.div>
     </Link>
   );
-}
-
-function getLogoColor(letter: string): string {
-  const colors = [
-    'bg-red-500',
-    'bg-blue-500',
-    'bg-green-500',
-    'bg-purple-500',
-    'bg-pink-500',
-    'bg-indigo-500',
-    'bg-yellow-500',
-    'bg-teal-500',
-  ];
-  const index = letter.charCodeAt(0) % colors.length;
-  return colors[index];
 }
 
 function formatValuation(val: number): string {
