@@ -16,13 +16,12 @@ import {
   HeartPulse,
   Cpu,
   ArrowRight,
-  Crown,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import CompanyCard from '@/components/ui/CompanyCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
-import { getCategoryIconColor, getCategoryLogoColor } from '@/lib/categoryColors';
+import CategoryTag from '@/components/ui/CategoryTag';
+import { getCategoryIconColor } from '@/lib/categoryColors';
 import { Company } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -47,20 +46,15 @@ const browseCategories: { name: string; count: number; icon: LucideIcon }[] = [
   { name: 'Robotics', count: 9, icon: Cpu },
 ];
 
-const emergingGradients = [
-  'bg-gradient-to-br from-purple-500 to-purple-700',
-  'bg-gradient-to-br from-blue-500 to-blue-700',
-  'bg-gradient-to-br from-orange-400 to-orange-600',
-  'bg-gradient-to-br from-yellow-400 to-yellow-600',
-];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.06, duration: 0.4, ease: 'easeOut' as const },
-  }),
+const logoColors: Record<string, string> = {
+  'AI Agents': 'bg-purple-100 text-purple-700',
+  'AI Coding': 'bg-blue-100 text-blue-700',
+  'AI Search': 'bg-emerald-100 text-emerald-700',
+  'AI Video': 'bg-pink-100 text-pink-700',
+  'AI Voice': 'bg-orange-100 text-orange-700',
+  'AI Infrastructure': 'bg-slate-100 text-slate-700',
+  'Healthcare AI': 'bg-red-100 text-red-700',
+  'Robotics': 'bg-yellow-100 text-yellow-700',
 };
 
 export default function HomePage() {
@@ -102,41 +96,59 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="relative overflow-hidden hero-dot-grid bg-white">
-        <div className="section-container py-16 md:py-24">
+      <section className="relative overflow-hidden bg-white pt-20 pb-16">
+        <div className="section-container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl"
+            transition={{ duration: 0.6 }}
+            className="w-full flex flex-col items-center"
           >
             <span className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 border border-red-200 text-xs font-medium rounded-full mb-6">
-              AI Companies
+              🤖 AI COMPANIES
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-5 leading-tight">
-              Discover the world&apos;s most innovative AI companies
+            <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight text-center mt-4">
+              Discover the world&apos;s most<br />
+              innovative <span className="text-red-500">AI companies</span>
             </h1>
-            <p className="text-lg text-gray-500 mb-8 max-w-2xl">
+            <p className="text-xl text-slate-500 text-center mt-4 max-w-2xl mx-auto">
               Track 50,000+ AI companies, $100B+ in funding, and the investors building the AI economy
             </p>
 
-            <div className="flex max-w-xl mb-8 border-2 border-gray-200 rounded-xl overflow-hidden focus-within:border-red-400 transition-colors">
+            {/* Stats Row */}
+            <div className="flex gap-12 justify-center mt-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">50K+</div>
+                <div className="text-sm text-slate-500">Companies</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">$100B+</div>
+                <div className="text-sm text-slate-500">Funding</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-slate-900">6K+</div>
+                <div className="text-sm text-slate-500">Investors</div>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="w-full mt-10 max-w-2xl mx-auto flex items-center border-2 border-slate-200 rounded-2xl px-4 py-3 focus-within:border-red-400 shadow-sm bg-white">
               <input
                 type="text"
                 placeholder="Search companies, investors, products..."
-                className="flex-1 px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none bg-white"
+                className="flex-1 outline-none text-slate-800 text-base placeholder:text-slate-400 bg-white"
               />
-              <button className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-5 transition-colors">
-                <Search className="w-4 h-4" />
+              <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl text-sm font-medium ml-2 transition-colors">
                 Search
               </button>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            {/* Category Pills Row */}
+            <div className="mt-6 flex gap-2 justify-center flex-wrap">
               {categories.map((category) => (
                 <button
                   key={category}
-                  className="px-4 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-full hover:border-red-400 hover:text-red-600 transition-colors duration-200"
+                  className="border border-slate-200 rounded-full px-4 py-1.5 text-sm text-slate-600 hover:border-red-400 hover:text-red-500 cursor-pointer transition-colors"
                 >
                   {category}
                 </button>
@@ -147,54 +159,97 @@ export default function HomePage() {
       </section>
 
       {/* Trending */}
-      <section className="py-16 bg-white border-t border-gray-100">
+      <section className="py-16 bg-white border-t border-slate-100">
         <div className="section-container">
-          <div className="flex items-end justify-between mb-8">
+          <div className="flex justify-between items-center mb-8">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-50 text-red-600 border border-red-200 text-xs font-medium rounded-full mb-3">
-                <TrendingUp className="w-3 h-3" />
-                Trending
+              <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
+                TRENDING
               </span>
-              <h2 className="text-2xl font-semibold text-gray-900">Trending AI Companies</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mt-1">Trending AI Companies</h2>
             </div>
             <Link
               href="/companies"
-              className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-red-500 transition-colors"
+              className="text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors"
             >
-              View all
-              <ArrowRight className="w-4 h-4" />
+              View all &rarr;
             </Link>
           </div>
 
           {loading ? (
             <LoadingSpinner />
           ) : (
-            <div className="grid lg:grid-cols-4 gap-4">
-              <div className="lg:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {featured.map((company, index) => (
-                  <motion.div
-                    key={company.id}
-                    custom={index}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    variants={fadeUp}
-                  >
-                    <CompanyCard company={company} variant="featured" rank={index + 1} />
-                  </motion.div>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {featured.map((company, index) => (
+                <motion.div
+                  key={company.id}
+                  className="col-span-1 bg-slate-900 rounded-2xl p-6 relative overflow-hidden hover:bg-slate-800 transition-colors cursor-pointer group flex flex-col justify-between min-h-[320px]"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Link href={`/companies/${company.slug}`} className="absolute inset-0 z-10" />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+
+                  {/* Top logo & badge */}
+                  <div className="relative z-20 flex justify-between items-start w-full">
+                    <div className={cn(
+                      "w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg",
+                      logoColors[company.category] || "bg-slate-100 text-slate-700"
+                    )}>
+                      {company.name.charAt(0)}
+                    </div>
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                      🔥 #{index + 1}
+                    </span>
+                  </div>
+
+                  {/* Bottom Text */}
+                  <div className="relative z-20 mt-auto">
+                    <h3 className="text-white text-xl font-bold">{company.name}</h3>
+                    <p className="text-slate-400 text-sm mt-1 line-clamp-2">
+                      {company.tagline || company.description}
+                    </p>
+                    <div className="flex items-center justify-between mt-4">
+                      <CategoryTag category={company.category} />
+                      <span className="text-white text-sm font-medium">
+                        {company.valuation ? `$${(company.valuation / 1e9).toFixed(1)}B` : ''}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* White List Cards Column */}
+              <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
                 {listItems.map((company, index) => (
                   <motion.div
                     key={company.id}
-                    custom={index + 3}
-                    initial="hidden"
-                    whileInView="visible"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    variants={fadeUp}
+                    transition={{ delay: (index + 3) * 0.1 }}
                   >
-                    <CompanyCard company={company} variant="compact" />
+                    <Link
+                      href={`/companies/${company.slug}`}
+                      className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3 bg-white h-[152px]"
+                    >
+                      <div className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base flex-shrink-0",
+                        logoColors[company.category] || "bg-slate-100 text-slate-700"
+                      )}>
+                        {company.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-slate-900 truncate">{company.name}</h3>
+                        <p className="text-xs text-slate-500 mt-0.5">{company.category}</p>
+                      </div>
+                      <span className="text-sm font-medium text-slate-700 ml-auto">
+                        {company.valuation ? `$${(company.valuation / 1e9).toFixed(1)}B` : ''}
+                      </span>
+                    </Link>
                   </motion.div>
                 ))}
               </div>
@@ -204,35 +259,37 @@ export default function HomePage() {
       </section>
 
       {/* Fastest Growing */}
-      <section className="py-16 bg-gray-50 border-t border-gray-100">
+      <section className="py-16 bg-slate-50 border-t border-slate-100">
         <div className="section-container">
           <div className="mb-8">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-50 text-red-600 border border-red-200 text-xs font-medium rounded-full mb-3">
-              <Zap className="w-3 h-3" />
-              Growth
+            <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
+              GROWTH
             </span>
-            <h2 className="text-2xl font-semibold text-gray-900">Fastest growing</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mt-1">Fastest Growing</h2>
           </div>
 
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 mt-6">
             {trendingCompanies.slice(0, 8).map((company) => (
               <Link
                 key={company.id}
                 href={`/companies/${company.slug}`}
-                className="flex-shrink-0 w-40 p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 text-center"
+                className="flex-shrink-0 min-w-[180px] bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow text-center cursor-pointer"
               >
                 <div
                   className={cn(
-                    'w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center font-semibold text-lg',
-                    getCategoryLogoColor(company.category)
+                    'w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center font-bold text-lg',
+                    logoColors[company.category] || 'bg-slate-100 text-slate-700'
                   )}
                 >
                   {company.name.charAt(0)}
                 </div>
-                <p className="text-sm font-semibold text-gray-900 truncate">{company.name}</p>
-                <p className="text-xs font-medium text-green-600 mt-1">
-                  +{company.growth_score.toFixed(0)}%
-                </p>
+                <p className="text-sm font-semibold text-slate-900 truncate">{company.name}</p>
+                <p className="text-xs text-slate-500 mt-0.5 truncate">{company.category}</p>
+                <div className="mt-3">
+                  <span className="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full">
+                    +{company.growth_score.toFixed(0)}%
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
@@ -240,80 +297,93 @@ export default function HomePage() {
       </section>
 
       {/* Emerging Startups */}
-      <section className="py-16 bg-white border-t border-gray-100">
+      <section className="py-16 bg-white border-t border-slate-100">
         <div className="section-container">
           <div className="mb-8">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-50 text-red-600 border border-red-200 text-xs font-medium rounded-full mb-3">
-              <Sparkles className="w-3 h-3" />
-              Emerging
+            <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
+              EMERGING
             </span>
-            <h2 className="text-2xl font-semibold text-gray-900">Startups to watch</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mt-1">Startups to Watch</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {trendingCompanies.slice(0, 4).map((company, index) => (
-              <motion.div
-                key={company.id}
-                custom={index}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-              >
-                <Link href={`/companies/${company.slug}`} className="block h-full group">
-                  <div
-                    className={cn(
-                      'h-full p-6 rounded-xl text-white shadow-sm hover:shadow-md transition-shadow duration-200',
-                      emergingGradients[index % emergingGradients.length]
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'w-11 h-11 rounded-full mb-4 flex items-center justify-center font-semibold text-lg bg-white/20 text-white'
-                      )}
-                    >
-                      {company.name.charAt(0)}
+            {trendingCompanies.slice(0, 4).map((company, index) => {
+              const gradients = [
+                'from-purple-600 to-purple-900',
+                'from-blue-600 to-blue-900',
+                'from-orange-500 to-red-700',
+                'from-slate-700 to-slate-900',
+              ];
+              const gradient = gradients[index % gradients.length];
+              return (
+                <motion.div
+                  key={company.id}
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Link href={`/companies/${company.slug}`} className="block h-full cursor-pointer">
+                    <div className={cn(
+                      "h-full p-6 rounded-2xl text-white shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br flex flex-col justify-between min-h-[220px]",
+                      gradient
+                    )}>
+                      <div>
+                        <span className="inline-block bg-white/20 text-white text-xs px-2 py-0.5 rounded-full mb-3 font-medium">
+                          {company.category}
+                        </span>
+                        <h3 className="text-xl font-bold">{company.name}</h3>
+                        <p className="text-white/70 text-sm mt-1 line-clamp-2">
+                          {company.tagline || company.description}
+                        </p>
+                      </div>
+                      <div className="text-white/60 text-xs mt-6 flex items-center gap-2">
+                        <span>Founded {company.founded_year || 'N/A'}</span>
+                        <span>•</span>
+                        <span>{company.employee_count || '0'} employees</span>
+                      </div>
                     </div>
-                    <h3 className="font-semibold text-white mb-2">{company.name}</h3>
-                    <p className="text-sm text-white/80 line-clamp-2">{company.tagline}</p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Browse by Category */}
-      <section className="py-16 bg-white border-t border-gray-100">
+      <section className="py-16 bg-slate-50 border-t border-slate-100">
         <div className="section-container">
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900">Browse by category</h2>
-            <p className="text-sm text-gray-500 mt-1">Explore the AI landscape by sector</p>
+            <h2 className="text-2xl font-bold text-slate-900">Browse by Category</h2>
+            <p className="text-sm text-slate-500 mt-1">Explore the AI landscape by sector</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
             {browseCategories.map((category) => {
               const Icon = category.icon;
               return (
-                <Link
+                <motion.div
                   key={category.name}
-                  href={`/companies?category=${encodeURIComponent(category.name)}`}
-                  className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 group"
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <div
-                    className={cn(
-                      'w-10 h-10 rounded-lg flex items-center justify-center mb-3',
-                      getCategoryIconColor(category.name)
-                    )}
+                  <Link
+                    href={`/companies?category=${encodeURIComponent(category.name)}`}
+                    className="block p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-red-200 transition-all cursor-pointer group"
                   >
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 text-sm mb-0.5 group-hover:text-red-500 transition-colors">
-                    {category.name}
-                  </h3>
-                  <p className="text-xs text-gray-500">{category.count} companies</p>
-                </Link>
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center mb-4',
+                        getCategoryIconColor(category.name)
+                      )}
+                    >
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-semibold text-slate-900 group-hover:text-red-500 transition-colors">
+                      {category.name}
+                    </h3>
+                    <p className="text-sm text-slate-500 mt-1">{category.count} companies</p>
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
@@ -321,35 +391,33 @@ export default function HomePage() {
       </section>
 
       {/* AI Unicorns */}
-      <section className="py-16 bg-gray-900 border-t border-gray-800">
+      <section className="py-16 bg-slate-900 text-white border-t border-slate-800">
         <div className="section-container">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
-              <Crown className="w-5 h-5 text-red-400" />
-            </div>
+            <span className="text-3xl">👑</span>
             <div>
-              <h2 className="text-2xl font-semibold text-white">AI Unicorns</h2>
-              <p className="text-sm text-gray-400 mt-0.5">Companies valued at $1B+</p>
+              <h2 className="text-2xl font-bold text-white">AI UNICORNS</h2>
+              <p className="text-sm text-slate-400 mt-1">Companies valued at $1B+</p>
             </div>
           </div>
 
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 mt-6">
             {unicorns.map((company) => (
               <Link
                 key={company.id}
                 href={`/companies/${company.slug}`}
-                className="flex-shrink-0 w-36 p-5 bg-gray-800 border border-gray-700 rounded-xl hover:border-gray-600 transition-colors text-center"
+                className="flex-shrink-0 w-40 p-4 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 hover:border-slate-600 transition-colors text-center cursor-pointer"
               >
                 <div
                   className={cn(
-                    'w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center font-semibold text-xl',
-                    getCategoryLogoColor(company.category)
+                    'w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center font-bold text-lg',
+                    logoColors[company.category] || 'bg-slate-100 text-slate-700'
                   )}
                 >
                   {company.name.charAt(0)}
                 </div>
                 <p className="font-semibold text-white text-sm truncate">{company.name}</p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-slate-400 text-xs mt-1">
                   ${company.valuation ? (company.valuation / 1e9).toFixed(1) : '0'}B
                 </p>
               </Link>
@@ -359,26 +427,26 @@ export default function HomePage() {
       </section>
 
       {/* Newsletter */}
-      <section className="py-16 bg-gray-50 border-t border-gray-100">
+      <section className="bg-slate-50 py-16 border-t border-slate-100">
         <div className="section-container">
-          <div className="max-w-lg mx-auto text-center">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+          <div className="bg-white rounded-3xl p-12 max-w-2xl mx-auto shadow-sm border border-slate-100">
+            <h2 className="text-3xl font-bold text-slate-900 text-center">
               Stay updated on the AI economy
             </h2>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-slate-500 text-center mt-2">
               Weekly insights on startups, funding, and market trends
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3 mt-8 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-red-400 transition-colors"
+                className="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-red-400 transition-colors"
               />
-              <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap">
+              <button className="bg-red-500 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-red-600 transition-colors whitespace-nowrap">
                 Subscribe
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-4">50,000+ subscribers</p>
+            <p className="text-slate-500 text-sm text-center mt-4">50,000+ subscribers</p>
           </div>
         </div>
       </section>

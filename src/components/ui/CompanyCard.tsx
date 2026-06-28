@@ -29,15 +29,15 @@ function formatViews(count: number): string {
 function CompanyLogo({ company, size = 'md' }: { company: Company; size?: 'sm' | 'md' | 'lg' }) {
   const letter = company.name.charAt(0).toUpperCase();
   const sizeClass = {
-    sm: 'w-9 h-9 text-sm',
-    md: 'w-11 h-11 text-base',
-    lg: 'w-12 h-12 text-lg',
+    sm: 'w-9 h-9 text-sm rounded-lg',
+    md: 'w-11 h-11 text-base rounded-xl',
+    lg: 'w-12 h-12 text-lg rounded-xl',
   }[size];
 
   return (
     <div
       className={cn(
-        'rounded-full flex items-center justify-center flex-shrink-0 font-semibold',
+        'flex items-center justify-center flex-shrink-0 font-semibold',
         sizeClass,
         getCategoryLogoColor(company.category)
       )}

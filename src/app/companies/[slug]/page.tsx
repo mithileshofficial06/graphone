@@ -18,7 +18,9 @@ import ProductCard from '@/components/ui/ProductCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
 import { CompanyWithRelations } from '@/types';
-const CHART_COLORS = ['#0066ff', '#ff3b30', '#ffe500', '#0a0a0a'];
+import { getCategoryLogoColor } from '@/lib/categoryColors';
+import { cn } from '@/lib/utils';
+const CHART_COLORS = ['#3b82f6', '#ef4444', '#f59e0b', '#0f172a'];
 
 export default function CompanyDetailPage({
   params,
@@ -82,8 +84,11 @@ export default function CompanyDetailPage({
           className="surface-card p-6 md:p-8 mb-6"
         >
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 bg-black text-white border-[3px] border-black shadow-[4px_4px_0_#0a0a0a] flex items-center justify-center flex-shrink-0">
-              <span className="font-black text-3xl">
+            <div className={cn(
+              "w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold text-3xl border border-slate-200 shadow-sm",
+              getCategoryLogoColor(company.category)
+            )}>
+              <span>
                 {company.name.charAt(0)}
               </span>
             </div>

@@ -9,8 +9,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
 import { InvestorWithRelations } from '@/types';
+import { cn } from '@/lib/utils';
 
-const CHART_COLORS = ['#0066ff', '#ff3b30', '#ffe500', '#0a0a0a', '#525252'];
+const CHART_COLORS = ['#3b82f6', '#ef4444', '#f59e0b', '#0f172a', '#64748b'];
 
 export default function InvestorDetailPage({
   params,
@@ -83,8 +84,8 @@ export default function InvestorDetailPage({
           className="surface-card p-6 md:p-8 mb-6"
         >
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 bg-black text-white border-[3px] border-black shadow-[4px_4px_0_#0a0a0a] flex items-center justify-center flex-shrink-0">
-              <span className="font-black text-3xl">
+            <div className="w-20 h-20 rounded-2xl bg-red-50 text-red-600 border border-red-200 shadow-sm flex items-center justify-center flex-shrink-0 font-bold text-3xl">
+              <span>
                 {investor.name.charAt(0)}
               </span>
             </div>
