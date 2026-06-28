@@ -113,6 +113,7 @@ export interface CompanyWithRelations extends Company {
 export interface InvestorWithRelations extends Investor {
   investments?: Investment[];
   companies?: Company[];
+  recent_investments?: Investment[];
 }
 
 export interface FundingRoundWithRelations extends FundingRound {

@@ -16,7 +16,7 @@ const investorCollections = [
   },
   {
     title: 'Indian AI Startups',
-    description: 'Investors funding India's AI ecosystem',
+    description: 'Investors funding Indian AI ecosystem',
     image: '🇮🇳',
   },
   {

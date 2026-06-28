@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { use } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink, MapPin, Calendar, Users, Twitter, Linkedin, Github } from 'lucide-react';
+import { ArrowLeft, ExternalLink, MapPin, Calendar, Users } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import CategoryTag from '@/components/ui/CategoryTag';
 import ProductCard from '@/components/ui/ProductCard';
@@ -134,19 +134,6 @@ export default function CompanyDetailPage({
                   </span>
                 )}
               </div>
-
-              {/* Social Links */}
-              <div className="flex gap-3 mt-4">
-                <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <Twitter className="w-5 h-5 text-gray-600" />
-                </button>
-                <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <Linkedin className="w-5 h-5 text-gray-600" />
-                </button>
-                <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  <Github className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -207,7 +194,7 @@ export default function CompanyDetailPage({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
