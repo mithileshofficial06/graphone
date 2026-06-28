@@ -233,13 +233,32 @@ Tested against GraphOne's reference screens:
 
 ## 11. What I Would Build Next (With 2 More Days)
 
+### ✅ COMPLETED: GitHub OAuth + Saved Companies/Investors Feature
+
+**Implementation Complete** - Users can now:
+- Sign in with GitHub OAuth
+- Save companies and investors they're interested in
+- View all saved items in a dedicated page
+- Manage their saved collections with an intuitive UI
+
+**Technical Details**:
+- Full authentication system using NextAuth.js
+- Secure Supabase tables with Row Level Security (RLS)
+- RESTful API endpoints for save/unsave operations
+- Reusable SaveButton component
+- Session management across the application
+- Mobile-responsive authentication UI
+
+See `AUTH_FEATURE.md` for complete documentation.
+
+### Still To Build:
+
 1. Real-time scraping pipeline using Playwright + Supabase Edge Functions
 2. Redis caching layer replacing in-memory Map
 3. Elasticsearch for cross-entity search with fuzzy matching
-4. GitHub OAuth + saved companies/investors feature
-5. GraphQL API layer for frontend flexibility
-6. WebSocket-based live funding round notifications
-7. AI-powered company similarity using embeddings
+4. GraphQL API layer for frontend flexibility
+5. WebSocket-based live funding round notifications
+6. AI-powered company similarity using embeddings
 
 ---
 
