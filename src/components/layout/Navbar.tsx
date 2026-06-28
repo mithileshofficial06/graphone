@@ -1,15 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, Menu, X, Bookmark, User, LogOut } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -79,60 +76,12 @@ export default function Navbar() {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            {status === 'authenticated' ? (
-              <>
-                <Link
-                  href="/saved"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  <Bookmark className="w-4 h-4" />
-                  <span>Saved</span>
-                </Link>
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
-                  >
-                    {session.user?.image ? (
-                      <img
-                        src={session.user.image}
-                        alt={session.user.name || 'User'}
-                        className="w-8 h-8 rounded-full"
-                      />
-                    ) : (
-                      <User className="w-5 h-5" />
-                    )}
-                    <span>{session.user?.name?.split(' ')[0]}</span>
-                  </button>
-                  {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                      <button
-                        onClick={() => signOut()}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => signIn('github')}
-                  className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
-                >
-                  Log In
-                </button>
-                <button
-                  onClick={() => signIn('github')}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"
-                >
-                  Sign Up
-                </button>
-              </>
-            )}
+            <button className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">
+              Log In
+            </button>
+            <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium">
+              Sign Up
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -196,49 +145,12 @@ export default function Navbar() {
               News
             </Link>
             <div className="pt-3 border-t border-gray-200">
-              {status === 'authenticated' ? (
-                <>
-                  <Link
-                    href="/saved"
-                    className="flex items-center gap-2 w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium mb-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Bookmark className="w-4 h-4" />
-                    <span>Saved</span>
-                  </Link>
-                  <button
-                    onClick={() => {
-                      signOut();
-                      setIsMenuOpen(false);
-                    }}
-                    className="flex items-center gap-2 w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => {
-                      signIn('github');
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium mb-2"
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => {
-                      signIn('github');
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"
-                  >
-                    Sign Up
-                  </button>
-                </>
-              )}
+              <button className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium mb-2">
+                Log In
+              </button>
+              <button className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium">
+                Sign Up
+              </button>
             </div>
           </div>
         </div>
