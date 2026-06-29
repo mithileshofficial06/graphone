@@ -25,6 +25,7 @@ import CategoryTag from '@/components/ui/CategoryTag';
 import { getCategoryIconColor } from '@/lib/categoryColors';
 import { Company } from '@/types';
 import { cn, getFallbackLogoUrl } from '@/lib/utils';
+import InfiniteScroll from '@/components/ui/InfiniteScroll';
 
 const categories = [
   'AI Agents',
@@ -208,8 +209,8 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-slate-900 mt-1">Fastest Growing</h2>
           </div>
 
-          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 mt-6">
-            {trendingCompanies.slice(0, 8).map((company) => (
+          <InfiniteScroll speed={30} pauseOnHover className="mt-6">
+            {trendingCompanies.slice(0, 12).map((company) => (
               <Link
                 key={company.id}
                 href={`/companies/${company.slug}`}
@@ -256,7 +257,7 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
-          </div>
+          </InfiniteScroll>
         </div>
       </section>
 
@@ -384,14 +385,14 @@ export default function HomePage() {
       <section className="py-16 bg-slate-900 text-white border-t border-slate-800">
         <div className="section-container">
           <div className="flex items-center gap-3 mb-8">
-            <span className="text-3xl">👑</span>
+            <span className="text-3xl">🦄</span>
             <div>
               <h2 className="text-2xl font-bold text-white">AI UNICORNS</h2>
               <p className="text-sm text-slate-400 mt-1">Companies valued at $1B+</p>
             </div>
           </div>
 
-          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 mt-6">
+          <InfiniteScroll speed={35} direction="right" pauseOnHover className="mt-6">
             {unicorns.map((company) => (
               <Link
                 key={company.id}
@@ -436,7 +437,80 @@ export default function HomePage() {
                 </p>
               </Link>
             ))}
+          </InfiniteScroll>
+        </div>
+      </section>
+
+      {/* Frontier Labs */}
+      <section className="py-16 bg-white border-t border-slate-100">
+        <div className="section-container">
+          <div className="mb-8">
+            <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
+              FRONTIER
+            </span>
+            <h2 className="text-2xl font-bold text-slate-900 mt-1">Leading AI Research Labs</h2>
+            <p className="text-sm text-slate-500 mt-1">Pushing the boundaries of AI capabilities</p>
           </div>
+
+          <InfiniteScroll speed={32} pauseOnHover className="mt-6">
+            {trendingCompanies
+              .filter((c) => ['AI Agents', 'AI Infrastructure'].includes(c.category))
+              .slice(0, 10)
+              .map((company) => (
+              <Link
+                key={`frontier-${company.id}`}
+                href={`/companies/${company.slug}`}
+                className="flex-shrink-0 w-64 p-6 bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-red-200 transition-all cursor-pointer group"
+              >
+                <div className="flex items-start gap-4">
+                  {getFallbackLogoUrl(company.logo_url) ? (
+                    <div className="relative w-14 h-14 flex-shrink-0">
+                      <img 
+                        src={getFallbackLogoUrl(company.logo_url) || ''} 
+                        alt={`${company.name} logo`} 
+                        className="w-14 h-14 rounded-xl object-contain bg-white border border-slate-200 p-2 relative z-10"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const fallback = document.getElementById(`frontier-fallback-${company.id}`);
+                          if (fallback) fallback.classList.remove('hidden');
+                        }}
+                      />
+                      <div 
+                        id={`frontier-fallback-${company.id}`}
+                        className={cn(
+                          'absolute inset-0 w-14 h-14 rounded-xl flex items-center justify-center font-bold text-lg hidden',
+                          logoColors[company.category] || 'bg-slate-100 text-slate-700'
+                        )}
+                      >
+                        {company.name.charAt(0)}
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={cn(
+                        'w-14 h-14 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0',
+                        logoColors[company.category] || 'bg-slate-100 text-slate-700'
+                      )}
+                    >
+                      {company.name.charAt(0)}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-slate-900 group-hover:text-red-500 transition-colors truncate">
+                      {company.name}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                      {company.tagline || company.description}
+                    </p>
+                    <div className="flex items-center gap-2 mt-3">
+                      <span className="text-xs text-slate-400">{company.stage}</span>
+                      {company.is_unicorn && <span className="text-xs">🦄</span>}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </InfiniteScroll>
         </div>
       </section>
 
