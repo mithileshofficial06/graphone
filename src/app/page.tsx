@@ -16,6 +16,7 @@ import {
   HeartPulse,
   Cpu,
   ArrowRight,
+  ArrowUpRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -58,6 +59,126 @@ const logoColors: Record<string, string> = {
   'Healthcare AI': 'bg-red-100 text-red-700',
   'Robotics': 'bg-yellow-100 text-yellow-700',
 };
+
+// ─── Emerging Company Card Component ──────────────────────────────────────────
+
+interface EmergingCompanyCardProps {
+  company: Company;
+  index: number;
+}
+
+const cardAccents = [
+  {
+    glow: 'bg-purple-500/10',
+    border: 'hover:border-purple-500/30',
+    tag: 'text-purple-400 bg-purple-950/20 border-purple-500/20',
+    arrow: 'text-purple-400',
+    fallbackBg: 'bg-purple-950/40 text-purple-300',
+  },
+  {
+    glow: 'bg-blue-500/10',
+    border: 'hover:border-blue-500/30',
+    tag: 'text-blue-400 bg-blue-950/20 border-blue-500/20',
+    arrow: 'text-blue-400',
+    fallbackBg: 'bg-blue-950/40 text-blue-300',
+  },
+  {
+    glow: 'bg-orange-500/10',
+    border: 'hover:border-orange-500/30',
+    tag: 'text-orange-400 bg-orange-950/20 border-orange-500/20',
+    arrow: 'text-orange-400',
+    fallbackBg: 'bg-orange-950/40 text-orange-300',
+  },
+  {
+    glow: 'bg-emerald-500/10',
+    border: 'hover:border-emerald-500/30',
+    tag: 'text-emerald-400 bg-emerald-950/20 border-emerald-500/20',
+    arrow: 'text-emerald-400',
+    fallbackBg: 'bg-emerald-950/40 text-emerald-300',
+  },
+];
+
+function EmergingCompanyCard({ company, index }: EmergingCompanyCardProps) {
+  const accent = cardAccents[index % cardAccents.length];
+  const logoUrl = getFallbackLogoUrl(company.logo_url);
+  const [imgFailed, setImgFailed] = useState(false);
+
+  return (
+    <Link href={`/companies/${company.slug}`} className="block h-full cursor-pointer">
+      <div
+        className={cn(
+          'h-full p-6 bg-slate-950/80 border border-slate-900 rounded-[28px] transition-all duration-300 hover:shadow-2xl hover:shadow-black/40 flex flex-col justify-between min-h-[230px] relative overflow-hidden group',
+          accent.border
+        )}
+      >
+        {/* Tech Dotted Grid Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none" />
+
+        {/* Dynamic Category Hover Radial Glow */}
+        <div
+          className={cn(
+            'absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[70px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none',
+            accent.glow
+          )}
+        />
+
+        <div className="relative z-10">
+          <div className="flex justify-between items-start mb-4">
+            <span
+              className={cn(
+                'inline-block text-[11px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-full border',
+                accent.tag
+              )}
+            >
+              {company.category}
+            </span>
+
+            {logoUrl && !imgFailed ? (
+              <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 p-1.5 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105 duration-300">
+                <img
+                  src={logoUrl}
+                  alt={`${company.name} logo`}
+                  className="w-full h-full object-contain filter brightness-95"
+                  onError={() => setImgFailed(true)}
+                />
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  'w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0 transition-transform group-hover:scale-105 duration-300',
+                  accent.fallbackBg
+                )}
+              >
+                {company.name.charAt(0)}
+              </div>
+            )}
+          </div>
+
+          <h3 className="text-lg font-bold text-white group-hover:text-slate-100 transition-colors duration-200">
+            {company.name}
+          </h3>
+          <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+            {company.tagline || company.description}
+          </p>
+        </div>
+
+        <div className="relative z-10 flex items-center justify-between mt-6 pt-4 border-t border-slate-900/50 text-[10px] text-slate-500 font-bold tracking-wider uppercase">
+          <div className="flex gap-2.5 items-center">
+            <span>EST. {company.founded_year || 'N/A'}</span>
+            <span className="w-1 h-1 rounded-full bg-slate-800" />
+            <span>{company.employee_count || '0'} EMP</span>
+          </div>
+          <ArrowUpRight
+            className={cn(
+              'w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5',
+              accent.arrow
+            )}
+          />
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function HomePage() {
   const [trendingCompanies, setTrendingCompanies] = useState<Company[]>([]);
@@ -271,71 +392,18 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold text-slate-900 mt-1">Startups to Watch</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {trendingCompanies.slice(0, 4).map((company, index) => {
-              const gradients = [
-                'from-purple-600 to-purple-900',
-                'from-blue-600 to-blue-900',
-                'from-orange-500 to-red-700',
-                'from-slate-700 to-slate-900',
-              ];
-              const gradient = gradients[index % gradients.length];
-              return (
-                <motion.div
-                  key={company.id}
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Link href={`/companies/${company.slug}`} className="block h-full cursor-pointer">
-                    <div className={cn(
-                      "h-full p-6 rounded-2xl text-white shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br flex flex-col justify-between min-h-[220px]",
-                      gradient
-                    )}>
-                      <div>
-                        <div className="flex justify-between items-start mb-3">
-                          <span className="inline-block bg-white/20 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                            {company.category}
-                          </span>
-                          {getFallbackLogoUrl(company.logo_url) ? (
-                            <div className="relative w-10 h-10">
-                              <img 
-                                src={getFallbackLogoUrl(company.logo_url) || ''} 
-                                alt={`${company.name} logo`} 
-                                className="w-10 h-10 rounded-lg object-contain bg-white p-1 relative z-10"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none';
-                                  const fallback = document.getElementById(`emerging-fallback-${company.id}`);
-                                  if (fallback) fallback.classList.remove('hidden');
-                                }}
-                              />
-                              <div 
-                                id={`emerging-fallback-${company.id}`}
-                                className="absolute inset-0 w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center font-bold text-sm hidden"
-                              >
-                                {company.name.charAt(0)}
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center font-bold text-sm">
-                              {company.name.charAt(0)}
-                            </div>
-                          )}
-                        </div>
-                        <h3 className="text-xl font-bold">{company.name}</h3>
-                        <p className="text-white/70 text-sm mt-1 line-clamp-2">
-                          {company.tagline || company.description}
-                        </p>
-                      </div>
-                      <div className="text-white/60 text-xs mt-6 flex items-center gap-2">
-                        <span>Founded {company.founded_year || 'N/A'}</span>
-                        <span>•</span>
-                        <span>{company.employee_count || '0'} employees</span>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trendingCompanies.slice(0, 4).map((company, index) => (
+              <motion.div
+                key={company.id}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ delay: index * 0.08, duration: 0.4 }}
+              >
+                <EmergingCompanyCard company={company} index={index} />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
