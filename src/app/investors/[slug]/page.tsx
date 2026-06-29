@@ -12,6 +12,26 @@ import { InvestorWithRelations } from '@/types';
 import { cn } from '@/lib/utils';
 import { getCategoryLogoColor } from '@/lib/categoryColors';
 
+function formatFunding(amount: number | null | undefined): string {
+  if (amount == null || amount <= 0) return 'Undisclosed';
+  if (amount >= 1e9) return `$${(amount / 1e9).toFixed(1)}B`;
+  if (amount >= 1e6) return `$${Math.round(amount / 1e6)}M`;
+  return `$${amount.toLocaleString()}`;
+}
+
+function formatEmployees(count: number | null | undefined): string {
+  if (count == null || count <= 0) return 'N/A';
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
+  return count.toString();
+}
+
+function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return 'N/A';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return 'N/A';
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
 const CHART_COLORS = ['#f43f5e', '#f97316', '#eab308', '#6366f1', '#94a3b8'];
 
 export default function InvestorDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -19,8 +39,10 @@ export default function InvestorDetailPage({ params }: { params: Promise<{ slug:
   const [investor, setInvestor] = useState<InvestorWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     fetchInvestor();
   }, [slug]);
 
@@ -130,27 +152,30 @@ export default function InvestorDetailPage({ params }: { params: Promise<{ slug:
 
         <Section title="Portfolio concentration">
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={portfolioData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                  outerRadius={90}
-                  dataKey="value"
-                  stroke="#fff"
-                  strokeWidth={2}
-                >
-                  {portfolioData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Legend wrapperStyle={{ color: '#64748b', fontSize: 12 }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+            {mounted && typeof window !== 'undefined' ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={portfolioData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                    outerRadius={90}
+                    dataKey="value"
+                    stroke="#fff"
+                    strokeWidth={2}
+                  >
+                    {portfolioData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Legend wrapperStyle={{ color: '#64748b', fontSize: 12 }} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full w-full bg-slate-50 animate-pulse rounded-2xl" />
+            )}          </div>
         </Section>
 
         {investor.recent_investments && investor.recent_investments.length > 0 && (

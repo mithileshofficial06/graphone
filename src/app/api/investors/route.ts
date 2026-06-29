@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching investors:', error);
       return NextResponse.json(
-        { data: null, error: 'Failed to fetch investors' },
+        { data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch investors' } },
         { status: 500 }
       );
     }
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error in GET /api/investors:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }

@@ -54,7 +54,7 @@ export async function GET(
     if (error) {
       console.error('Error fetching funding rounds:', error);
       return NextResponse.json(
-        { data: null, error: 'Failed to fetch funding rounds' },
+        { data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch funding rounds' } },
         { status: 500 }
       );
     }
@@ -69,7 +69,7 @@ export async function GET(
   } catch (error) {
     console.error('Unexpected error in GET /api/companies/[slug]/funding:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }

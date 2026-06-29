@@ -17,19 +17,24 @@ import { Company, FundingRoundWithRelations, Product, NewsArticle } from '@/type
 
 // ─── Helper formatters ────────────────────────────────────────────────────────
 
-function formatFunding(amount: number): string {
+function formatFunding(amount: number | null | undefined): string {
+  if (amount == null || amount <= 0) return 'Undisclosed';
   if (amount >= 1e9) return `$${(amount / 1e9).toFixed(1)}B`;
   if (amount >= 1e6) return `$${Math.round(amount / 1e6)}M`;
   return `$${amount.toLocaleString()}`;
 }
 
-function formatEmployees(count: number): string {
+function formatEmployees(count: number | null | undefined): string {
+  if (count == null || count <= 0) return 'N/A';
   if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
   return count.toString();
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+function formatDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return 'N/A';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return 'N/A';
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
 // ─── Company Logo with image + letter fallback ────────────────────────────────
@@ -297,7 +302,10 @@ export default function CompanyDetailPage({
     }
   }, [slug]);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     fetchAll();
   }, [fetchAll]);
 
@@ -577,7 +585,7 @@ export default function CompanyDetailPage({
                   )}
                 </div>
                 <div className="lg:w-[40%] h-64">
-                  {chartData.length > 0 ? (
+                  {chartData.length > 0 && mounted && typeof window !== 'undefined' ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
                         <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} />
@@ -587,6 +595,8 @@ export default function CompanyDetailPage({
                         <Bar dataKey="amount" fill="#f43f5e" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
+                  ) : chartData.length > 0 ? (
+                    <div className="h-full w-full bg-slate-50 animate-pulse rounded-2xl" />
                   ) : (
                     <div className="h-full flex items-center justify-center text-slate-400 text-sm">No chart data</div>
                   )}
@@ -598,18 +608,22 @@ export default function CompanyDetailPage({
             <Section title="Ownership Structure">
               <div className="flex flex-col md:flex-row gap-8 items-center">
                 <div className="w-full md:w-1/2 h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={ownershipData} cx="50%" cy="50%" innerRadius={60} outerRadius={100}
-                        dataKey="value" strokeWidth={2} stroke="#fff">
-                        {ownershipData.map((entry, i) => (
-                          <Cell key={i} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value: any) => [`${value}%`, 'Ownership']}
-                        contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }} />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {mounted && typeof window !== 'undefined' ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={ownershipData} cx="50%" cy="50%" innerRadius={60} outerRadius={100}
+                          dataKey="value" strokeWidth={2} stroke="#fff">
+                          {ownershipData.map((entry, i) => (
+                            <Cell key={i} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value: any) => [`${value}%`, 'Ownership']}
+                          contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full w-full bg-slate-50 animate-pulse rounded-2xl" />
+                  )}
                 </div>
                 <div className="w-full md:w-1/2 space-y-4">
                   {ownershipData.map((item) => (

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching trending news:', error);
       return NextResponse.json(
-        { data: null, error: 'Failed to fetch trending news' },
+        { data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch trending news' } },
         { status: 500 }
       );
     }
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error in GET /api/news/trending:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }

@@ -104,7 +104,7 @@ export async function GET(
   } catch (error) {
     console.error('Unexpected error in GET /api/companies/[slug]:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }

@@ -5,10 +5,10 @@ import { getClientIp } from '@/lib/auth';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
 
     // Rate limiting
     const clientIp = getClientIp(request);
@@ -16,41 +16,25 @@ export async function GET(
     
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
-        { data: null, error: 'Rate limit exceeded. Try again later.' },
+        { data: null, error: { code: 'RATE_LIMIT', message: 'Rate limit exceeded. Try again later.' } },
         { status: 429 }
       );
     }
 
-    // Fetch founder with linked company details
-    const { data, error } = await supabase
+    // Fetch founder
+    const { data: founder, error: founderError } = await supabase
       .from('founders')
-      .select(`
-        *,
-        company:companies(
-          id,
-          slug,
-          name,
-          logo_url,
-          tagline,
-          category,
-          stage,
-          valuation,
-          is_unicorn,
-          founded_year,
-          employee_count,
-          website_url
-        )
-      `)
-      .eq('id', id)
+      .select('*, company:companies(id, name, slug, logo_url)')
+      .eq('id', slug)
       .single();
 
-    if (error || !data) {
+    if (founderError || !founder) {
       return NextResponse.json(
         { 
           data: null, 
           error: {
             code: 'NOT_FOUND',
-            message: `Founder with id '${id}' not found`
+            message: `Founder with ID '${slug}' not found`
           }
         },
         { status: 404 }
@@ -58,14 +42,20 @@ export async function GET(
     }
 
     return NextResponse.json({
-      data,
+      data: founder,
       meta: null,
       error: null,
     });
   } catch (error) {
-    console.error('Unexpected error in GET /api/founders/[id]:', error);
+    console.error('Unexpected error in GET /api/founders/[slug]:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      {
+        data: null,
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Internal server error'
+        }
+      },
       { status: 500 }
     );
   }

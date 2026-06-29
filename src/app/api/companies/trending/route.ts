@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching trending companies:', error);
       return NextResponse.json(
-        { data: null, error: 'Failed to fetch trending companies' },
+        { data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch trending companies' } },
         { status: 500 }
       );
     }
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error in GET /api/companies/trending:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }

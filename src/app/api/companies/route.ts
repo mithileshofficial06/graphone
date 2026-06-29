@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching companies:', error);
       return NextResponse.json(
-        { data: null, error: 'Failed to fetch companies' },
+        { data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch companies' } },
         { status: 500 }
       );
     }
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error in GET /api/companies:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Error creating company:', error);
       return NextResponse.json(
-        { data: null, error: 'Failed to create company' },
+        { data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to create company' } },
         { status: 500 }
       );
     }
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error in POST /api/companies:', error);
     return NextResponse.json(
-      { data: null, error: 'Internal server error' },
+      { data: null, error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } },
       { status: 500 }
     );
   }
