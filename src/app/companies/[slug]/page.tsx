@@ -95,35 +95,35 @@ interface CompanyDetail extends Company {
 
 function PageSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 animate-pulse">
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="h-4 w-48 bg-gray-200 rounded mb-8" />
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-8">
+    <div className="min-h-screen bg-[#fafafa] animate-pulse">
+      <div className="section-container py-8">
+        <div className="h-4 w-48 bg-slate-200 rounded mb-8" />
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-8 mb-8">
           <div className="flex gap-6 items-start">
-            <div className="w-20 h-20 rounded-2xl bg-gray-200 flex-shrink-0" />
+            <div className="w-20 h-20 rounded-2xl bg-slate-200 flex-shrink-0" />
             <div className="flex-1 space-y-3">
-              <div className="h-8 w-64 bg-gray-200 rounded" />
-              <div className="h-4 w-full max-w-lg bg-gray-200 rounded" />
+              <div className="h-8 w-64 bg-slate-200 rounded" />
+              <div className="h-4 w-full max-w-lg bg-slate-200 rounded" />
               <div className="flex gap-4 mt-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-4 w-24 bg-gray-200 rounded" />
+                  <div key={i} className="h-4 w-24 bg-slate-200 rounded" />
                 ))}
               </div>
             </div>
           </div>
           <div className="grid grid-cols-5 gap-4 mt-8">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-16 bg-gray-100 rounded-xl" />
+              <div key={i} className="h-16 bg-slate-100 rounded-xl" />
             ))}
           </div>
         </div>
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white rounded-2xl border border-gray-200 p-8 mb-6">
-            <div className="h-6 w-40 bg-gray-200 rounded mb-6" />
+          <div key={i} className="bg-white rounded-2xl border border-slate-200/80 p-8 mb-6">
+            <div className="h-6 w-40 bg-slate-200 rounded mb-6" />
             <div className="space-y-3">
-              <div className="h-4 bg-gray-100 rounded w-full" />
-              <div className="h-4 bg-gray-100 rounded w-5/6" />
-              <div className="h-4 bg-gray-100 rounded w-4/6" />
+              <div className="h-4 bg-slate-100 rounded w-full" />
+              <div className="h-4 bg-slate-100 rounded w-5/6" />
+              <div className="h-4 bg-slate-100 rounded w-4/6" />
             </div>
           </div>
         ))}
@@ -136,10 +136,10 @@ function PageSkeleton() {
 
 function NotFoundState() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
       <div className="text-center">
-        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Building2 className="w-10 h-10 text-red-400" />
+        <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Building2 className="w-10 h-10 text-rose-400" />
         </div>
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Company not found</h1>
         <p className="text-slate-600 mb-6">
@@ -147,7 +147,7 @@ function NotFoundState() {
         </p>
         <Link
           href="/companies"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors"
+          className="btn-primary inline-flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Companies
@@ -161,7 +161,7 @@ function NotFoundState() {
 
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
       <div className="text-center max-w-sm">
         <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <TrendingUp className="w-10 h-10 text-orange-400" />
@@ -217,7 +217,7 @@ function getStageBadgeColor(stage: string): string {
     'Series B': 'bg-purple-100 text-purple-700',
     'Series C': 'bg-orange-100 text-orange-700',
     'Series D': 'bg-pink-100 text-pink-700',
-    Growth: 'bg-red-100 text-red-700',
+    Growth: 'bg-rose-100 text-rose-700',
     Public: 'bg-emerald-100 text-emerald-700',
     Acquired: 'bg-slate-100 text-slate-700',
   };
@@ -230,7 +230,7 @@ function getRoundBadgeColor(round: string): string {
   if (r.includes('series a')) return 'bg-blue-100 text-blue-700';
   if (r.includes('series b')) return 'bg-purple-100 text-purple-700';
   if (r.includes('series c')) return 'bg-orange-100 text-orange-700';
-  if (r.includes('growth') || r.includes('series d')) return 'bg-red-100 text-red-700';
+  if (r.includes('growth') || r.includes('series d')) return 'bg-rose-100 text-rose-700';
   return 'bg-slate-100 text-slate-700';
 }
 
@@ -340,13 +340,13 @@ export default function CompanyDetailPage({
         { name: 'Microsoft', value: 49, color: '#3B82F6' },
         { name: 'Employees', value: 18, color: '#10B981' },
         { name: 'Founders', value: 12, color: '#F59E0B' },
-        { name: 'Other Investors', value: 21, color: '#EF4444' },
+        { name: 'Other Investors', value: 21, color: '#f43f5e' },
       ]
     : [
         { name: 'Founders', value: 45, color: '#3B82F6' },
         { name: 'Employees', value: 25, color: '#10B981' },
         { name: 'Series Investors', value: 20, color: '#F59E0B' },
-        { name: 'Angels', value: 10, color: '#EF4444' },
+        { name: 'Angels', value: 10, color: '#f43f5e' },
       ];
 
   const seedInvestors = fundingRounds
@@ -392,8 +392,8 @@ export default function CompanyDetailPage({
   const adjacentCompetitors = similarCompanies.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-[#fafafa]">
+      <div className="section-container py-8">
         <div className="flex gap-8 items-start">
 
           {/* Main Content */}
@@ -401,15 +401,15 @@ export default function CompanyDetailPage({
 
             {/* Breadcrumb */}
             <nav className="flex items-center gap-1.5 text-sm text-slate-500 mb-6">
-              <Link href="/" className="hover:text-red-500 transition-colors">Home</Link>
+              <Link href="/" className="hover:text-rose-600 transition-colors">Home</Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <Link href="/companies" className="hover:text-red-500 transition-colors">Companies</Link>
+              <Link href="/companies" className="hover:text-rose-600 transition-colors">Companies</Link>
               <ChevronRight className="w-3.5 h-3.5" />
               <span className="text-slate-900 font-medium">{company.name}</span>
             </nav>
 
             {/* SECTION 1 — COMPANY HEADER */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 mb-16 pb-16 border-b border-slate-100">
+            <div className="surface-card p-8 mb-16 pb-16 border-b border-slate-100">
               <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
                 <CompanyLogoImg
                   name={company.name}
@@ -430,7 +430,7 @@ export default function CompanyDetailPage({
               <div className="flex flex-wrap items-center gap-5 text-sm text-slate-600 mb-5">
                 {company.website_url && (
                   <a href={company.website_url} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 hover:text-red-500 transition-colors font-medium">
+                    className="flex items-center gap-1.5 hover:text-rose-600 transition-colors font-medium">
                     <Globe className="w-4 h-4" />
                     {company.website_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                   </a>
@@ -500,7 +500,7 @@ export default function CompanyDetailPage({
                     <div
                       className={cn('h-1.5 rounded-full',
                         company.growth_score >= 70 ? 'bg-green-500' :
-                        company.growth_score >= 40 ? 'bg-amber-500' : 'bg-red-500'
+                        company.growth_score >= 40 ? 'bg-amber-500' : 'bg-rose-500'
                       )}
                       style={{ width: `${Math.min(100, company.growth_score)}%` }}
                     />
@@ -522,7 +522,7 @@ export default function CompanyDetailPage({
                       <div key={idx} className="relative flex flex-col items-center w-32 flex-shrink-0">
                         <p className="text-xs font-semibold text-slate-500 mb-2 h-5">{year}</p>
                         <div className={cn('w-4 h-4 rounded-full border-2 z-10 flex-shrink-0',
-                          isCurrent ? 'bg-red-500 border-red-500' :
+                          isCurrent ? 'bg-rose-500 border-rose-500' :
                           isPast ? 'bg-slate-300 border-slate-300' : 'bg-white border-slate-300'
                         )} />
                         <p className="text-xs text-center text-slate-600 mt-2 px-1 leading-snug max-w-[7rem]">
@@ -584,7 +584,7 @@ export default function CompanyDetailPage({
                         <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}M`} />
                         <Tooltip formatter={(value: any) => [`$${value}M`, 'Amount']}
                           contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }} />
-                        <Bar dataKey="amount" fill="#EF4444" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="amount" fill="#f43f5e" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
@@ -692,7 +692,7 @@ export default function CompanyDetailPage({
                             {product.name.charAt(0)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-slate-900 group-hover:text-red-500 transition-colors truncate">
+                            <p className="font-semibold text-slate-900 group-hover:text-rose-600 transition-colors truncate">
                               {product.name}
                             </p>
                             <CategoryTag category={product.category} className="mt-1" />
@@ -703,7 +703,7 @@ export default function CompanyDetailPage({
                         )}
                         <div className="flex items-center justify-between mt-3">
                           <span className="flex items-center gap-1 text-sm text-slate-500">
-                            <Heart className="w-3.5 h-3.5 text-red-400" />
+                            <Heart className="w-3.5 h-3.5 text-rose-400" />
                             {product.upvotes}
                           </span>
                           <span className="text-xs text-slate-400">{formatDate(product.created_at)}</span>
@@ -725,7 +725,7 @@ export default function CompanyDetailPage({
                   <div className="space-y-3">
                     {directCompetitors.length > 0 ? directCompetitors.map((comp) => (
                       <Link key={comp.id} href={`/companies/${comp.slug}`}
-                        className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-red-200 hover:shadow-sm transition-all group">
+                        className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-rose-200 hover:shadow-sm transition-all group">
                         <CompanyLogoImg
                           name={comp.name}
                           logoUrl={comp.logo_url}
@@ -735,7 +735,7 @@ export default function CompanyDetailPage({
                           shape="rounded-lg"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900 text-sm group-hover:text-red-500 transition-colors truncate">{comp.name}</p>
+                          <p className="font-medium text-slate-900 text-sm group-hover:text-rose-600 transition-colors truncate">{comp.name}</p>
                           <CategoryTag category={comp.category} className="mt-0.5" />
                         </div>
                       </Link>
@@ -747,7 +747,7 @@ export default function CompanyDetailPage({
                   <div className="space-y-3">
                     {adjacentCompetitors.length > 0 ? adjacentCompetitors.map((comp) => (
                       <Link key={comp.id} href={`/companies/${comp.slug}`}
-                        className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-red-200 hover:shadow-sm transition-all group">
+                        className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-rose-200 hover:shadow-sm transition-all group">
                         <CompanyLogoImg
                           name={comp.name}
                           logoUrl={comp.logo_url}
@@ -757,7 +757,7 @@ export default function CompanyDetailPage({
                           shape="rounded-lg"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900 text-sm group-hover:text-red-500 transition-colors truncate">{comp.name}</p>
+                          <p className="font-medium text-slate-900 text-sm group-hover:text-rose-600 transition-colors truncate">{comp.name}</p>
                           <CategoryTag category={comp.category} className="mt-0.5" />
                         </div>
                       </Link>
@@ -771,7 +771,7 @@ export default function CompanyDetailPage({
             <Section
               title="Recent News"
               action={
-                <Link href="/news" className="text-sm text-red-500 hover:text-red-600 font-medium flex items-center gap-1">
+                <Link href="/news" className="text-sm text-rose-500 hover:text-rose-600 font-medium flex items-center gap-1">
                   View all news <ChevronRight className="w-4 h-4" />
                 </Link>
               }
@@ -781,14 +781,14 @@ export default function CompanyDetailPage({
                   {news.slice(0, 5).map((article) => (
                     <a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer"
                       className="block py-4 group">
-                      <p className="font-medium text-slate-900 group-hover:text-red-500 transition-colors mb-1">
+                      <p className="font-medium text-slate-900 group-hover:text-rose-600 transition-colors mb-1">
                         {article.title}
                       </p>
                       <div className="flex items-center gap-2 text-sm text-slate-500 flex-wrap">
                         <span className="px-2 py-0.5 bg-slate-100 rounded text-xs font-medium">{article.source}</span>
                         <span>{formatDate(article.published_at)}</span>
                         {article.tags?.[0] && (
-                          <span className="px-2 py-0.5 bg-red-50 text-red-600 rounded text-xs font-medium">
+                          <span className="px-2 py-0.5 bg-rose-50 text-rose-600 rounded text-xs font-medium">
                             {article.tags[0]}
                           </span>
                         )}
@@ -816,7 +816,7 @@ export default function CompanyDetailPage({
                           textClass="text-lg font-bold"
                           shape="rounded-xl"
                         />
-                        <p className="font-semibold text-slate-900 text-sm group-hover:text-red-500 transition-colors truncate">
+                        <p className="font-semibold text-slate-900 text-sm group-hover:text-rose-600 transition-colors truncate">
                           {comp.name}
                         </p>
                         <CategoryTag category={comp.category} className="mt-1.5" />
@@ -848,7 +848,7 @@ export default function CompanyDetailPage({
                 </div>
               </div>
 
-              <button className="w-full py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
+              <button className="w-full btn-primary py-3 text-sm">
                 <Heart className="w-4 h-4" />
                 Follow Company
               </button>

@@ -36,12 +36,12 @@ function CompanyLogo({ company, size = 'md' }: { company: Company; size?: 'sm' |
   const logoUrl = getFallbackLogoUrl(company.logo_url);
 
   return (
-    <div className={cn("relative flex-shrink-0", sizeClass)}>
+    <div className={cn('relative flex-shrink-0', sizeClass)}>
       {logoUrl ? (
-        <img 
-          src={logoUrl} 
-          alt={`${company.name} logo`} 
-          className={cn("object-contain bg-white p-1 w-full h-full", sizeClass)}
+        <img
+          src={logoUrl}
+          alt={`${company.name} logo`}
+          className={cn('object-contain bg-white border border-slate-100 p-1 w-full h-full', sizeClass)}
           onError={(e) => {
             e.currentTarget.style.display = 'none';
             const fallback = document.getElementById(`card-logo-fallback-${company.id}-${size}`);
@@ -68,7 +68,7 @@ export default function CompanyCard({ company, variant = 'default', rank }: Comp
   if (variant === 'featured') {
     return (
       <Link href={`/companies/${company.slug}`} className="block h-full group">
-        <div className="relative h-full min-h-[220px] bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div className="relative h-full min-h-[220px] bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           {rank !== undefined && (
             <div className="absolute top-4 right-4 z-10">
@@ -80,7 +80,7 @@ export default function CompanyCard({ company, variant = 'default', rank }: Comp
               <CompanyLogo company={company} size="lg" />
             </div>
             <h3 className="font-semibold text-white text-lg mb-1">{company.name}</h3>
-            <p className="text-sm text-gray-300 line-clamp-2 mb-3">
+            <p className="text-sm text-slate-300 line-clamp-2 mb-3">
               {company.tagline || company.description}
             </p>
             <CategoryTag category={company.category} />
@@ -93,15 +93,15 @@ export default function CompanyCard({ company, variant = 'default', rank }: Comp
   if (variant === 'compact') {
     return (
       <Link href={`/companies/${company.slug}`} className="block group">
-        <div className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div className="flex items-center gap-3 p-4 surface-card card-hover">
           <CompanyLogo company={company} size="sm" />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-red-500 transition-colors">
+            <h3 className="font-semibold text-slate-900 text-sm truncate group-hover:text-rose-600 transition-colors">
               {company.name}
             </h3>
             <CategoryTag category={company.category} className="mt-1" />
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500 flex-shrink-0">
+          <div className="flex items-center gap-1 text-xs text-slate-500 flex-shrink-0">
             <Eye className="w-3.5 h-3.5" />
             <span>{formatViews(company.view_count)}</span>
           </div>
@@ -112,20 +112,20 @@ export default function CompanyCard({ company, variant = 'default', rank }: Comp
 
   return (
     <Link href={`/companies/${company.slug}`} className="block h-full group">
-      <div className="h-full p-5 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+      <div className="h-full p-5 surface-card card-hover">
         <div className="flex items-start gap-4">
           <CompanyLogo company={company} />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 truncate group-hover:text-red-500 transition-colors">
+            <h3 className="font-semibold text-slate-900 truncate group-hover:text-rose-600 transition-colors">
               {company.name}
             </h3>
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+            <p className="text-sm text-slate-500 line-clamp-2 mt-1">
               {company.tagline || company.description}
             </p>
             <div className="flex items-center gap-2 mt-3 flex-wrap">
               <CategoryTag category={company.category} />
               {company.valuation && (
-                <span className="text-xs text-gray-500 font-medium">
+                <span className="text-xs text-slate-500 font-medium">
                   ${formatValuation(company.valuation)}
                 </span>
               )}

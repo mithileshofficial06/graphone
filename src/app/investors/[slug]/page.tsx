@@ -10,14 +10,11 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
 import { InvestorWithRelations } from '@/types';
 import { cn } from '@/lib/utils';
+import { getCategoryLogoColor } from '@/lib/categoryColors';
 
-const CHART_COLORS = ['#3b82f6', '#ef4444', '#f59e0b', '#0f172a', '#64748b'];
+const CHART_COLORS = ['#f43f5e', '#f97316', '#eab308', '#6366f1', '#94a3b8'];
 
-export default function InvestorDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default function InvestorDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const [investor, setInvestor] = useState<InvestorWithRelations | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,11 +30,7 @@ export default function InvestorDetailPage({
       setError(null);
       const res = await fetch(`/api/investors/${slug}`);
       const data = await res.json();
-
-      if (data.error) {
-        throw new Error(data.error.message || data.error);
-      }
-
+      if (data.error) throw new Error(data.error.message || data.error);
       setInvestor(data.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load investor');
@@ -67,14 +60,11 @@ export default function InvestorDetailPage({
   ];
 
   return (
-    <div className="min-h-screen">
-      <div className="section-container py-8 md:py-12">
-        <Link
-          href="/investors"
-          className="link-brutal inline-flex items-center gap-2 mb-8 group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" strokeWidth={3} />
-          BACK TO INVESTORS
+    <div className="page-shell">
+      <div className="section-container">
+        <Link href="/investors" className="link-accent inline-flex items-center gap-2 mb-8 group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          Back to investors
         </Link>
 
         <motion.div
@@ -84,83 +74,61 @@ export default function InvestorDetailPage({
           className="surface-card p-6 md:p-8 mb-6"
         >
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 rounded-2xl bg-red-50 text-red-600 border border-red-200 shadow-sm flex items-center justify-center flex-shrink-0 font-bold text-3xl">
-              <span>
-                {investor.name.charAt(0)}
-              </span>
+            <div className={cn('w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold text-3xl', getCategoryLogoColor(investor.sector_focus?.[0] ?? 'AI Infrastructure'))}>
+              {investor.name.charAt(0)}
             </div>
-
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3">
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-2">
-                    {investor.name}
-                  </h1>
-                  <p className="text-lg text-muted font-bold uppercase tracking-wide">{investor.investment_thesis}</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-2">{investor.name}</h1>
+                  <p className="text-base text-slate-500">{investor.investment_thesis}</p>
                 </div>
-                <button className="btn-secondary text-sm flex-shrink-0">
-                  FOLLOW INVESTOR
-                </button>
+                <button className="btn-secondary text-sm flex-shrink-0">Follow investor</button>
               </div>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted font-bold uppercase tracking-wide mb-4">
-                <span className="brutal-tag bg-[#0066ff] text-white">
-                  {investor.type}
-                </span>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-4">
+                <span className="tag-pill-accent tag-pill">{investor.type}</span>
                 {investor.aum && (
-                  <div className="flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5" strokeWidth={3} />
-                    <span className="font-mono">${(investor.aum / 1e9).toFixed(1)}B AUM</span>
-                  </div>
+                  <span className="flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    ${(investor.aum / 1e9).toFixed(1)}B AUM
+                  </span>
                 )}
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5" strokeWidth={3} />
-                  <span>{investor.portfolio_count} portfolio companies</span>
-                </div>
+                <span className="flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" />
+                  {investor.portfolio_count} portfolio companies
+                </span>
               </div>
-
               {investor.stage_focus && investor.stage_focus.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {investor.stage_focus.map((stage) => (
-                    <span
-                      key={stage}
-                      className="brutal-tag"
-                    >
-                      {stage}
-                    </span>
+                    <span key={stage} className="tag-pill">{stage}</span>
                   ))}
                 </div>
               )}
             </div>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8 pt-8 border-t-[3px] border-black">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8 pt-8 border-t border-slate-100">
             {stats.map((stat) => (
               <div key={stat.label}>
-                <p className="text-xs text-muted mb-1 uppercase tracking-wider font-black">{stat.label}</p>
-                <p className="text-xl font-black text-foreground tracking-tight uppercase">{stat.value}</p>
+                <p className="text-xs text-slate-400 mb-1">{stat.label}</p>
+                <p className="text-lg font-bold text-slate-900">{stat.value}</p>
               </div>
             ))}
           </div>
         </motion.div>
 
         {investor.sector_focus && investor.sector_focus.length > 0 && (
-          <Section title="Investment Thesis">
-            <p className="text-muted mb-6 leading-relaxed font-medium">{investor.investment_thesis}</p>
+          <Section title="Investment thesis">
+            <p className="text-slate-500 mb-6 leading-relaxed">{investor.investment_thesis}</p>
             <div className="flex flex-wrap gap-2">
               {investor.sector_focus.map((sector) => (
-                <span
-                  key={sector}
-                  className="brutal-tag bg-[#ff3b30] text-white"
-                >
-                  {sector}
-                </span>
+                <span key={sector} className="tag-pill-accent tag-pill">{sector}</span>
               ))}
             </div>
           </Section>
         )}
 
-        <Section title="Portfolio Concentration">
+        <Section title="Portfolio concentration">
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -169,84 +137,69 @@ export default function InvestorDetailPage({
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name} ${((percent || 0) * 100).toFixed(0)}%`
-                  }
+                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                   outerRadius={90}
-                  fill="#0066ff"
                   dataKey="value"
-                  stroke="#0a0a0a"
+                  stroke="#fff"
                   strokeWidth={2}
                 >
                   {portfolioData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Legend wrapperStyle={{ color: '#525252', fontSize: 12, fontWeight: 700 }} />
+                <Legend wrapperStyle={{ color: '#64748b', fontSize: 12 }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </Section>
 
         {investor.recent_investments && investor.recent_investments.length > 0 && (
-          <Section title="Recent Investments">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Section title="Recent investments">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {investor.recent_investments.slice(0, 6).map((investment) => {
                 const item = investment as typeof investment & {
                   company?: { name?: string; category?: string; stage?: string };
                   funding_round?: { amount: number; round_type: string };
                 };
                 return (
-                <div
-                  key={item.id}
-                  className="p-5 surface-card bg-[#f4f0e8] card-hover"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 bg-black text-white border-[3px] border-black shadow-[3px_3px_0_#0a0a0a] flex items-center justify-center flex-shrink-0">
-                      <span className="font-black text-lg">
+                  <div key={item.id} className="surface-card card-hover p-5">
+                    <div className="flex items-start gap-4">
+                      <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg', getCategoryLogoColor(item.company?.category ?? 'AI Infrastructure'))}>
                         {item.company?.name?.charAt(0) || 'C'}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-black uppercase text-foreground tracking-tight mb-1 text-sm">
-                        {item.company?.name || 'Company'}
-                      </h3>
-                      <div className="flex items-center gap-2 text-xs text-muted font-bold uppercase mb-2">
-                        <span>{item.company?.category}</span>
-                        <span>·</span>
-                        <span>{item.company?.stage}</span>
                       </div>
-                      {item.funding_round && (
-                        <p className="text-sm text-muted font-mono font-black">
-                          ${(item.funding_round.amount / 1e6).toFixed(0)}M ·{' '}
-                          {item.funding_round.round_type}
-                        </p>
-                      )}
-                      {item.investment_date && (
-                        <p className="text-xs text-muted font-bold mt-1 uppercase">
-                          {new Date(item.investment_date).toLocaleDateString()}
-                        </p>
-                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-slate-900 mb-1">{item.company?.name || 'Company'}</h3>
+                        <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
+                          <span>{item.company?.category}</span>
+                          <span>·</span>
+                          <span>{item.company?.stage}</span>
+                        </div>
+                        {item.funding_round && (
+                          <p className="text-sm text-slate-600 font-medium">
+                            ${(item.funding_round.amount / 1e6).toFixed(0)}M · {item.funding_round.round_type}
+                          </p>
+                        )}
+                        {item.investment_date && (
+                          <p className="text-xs text-slate-400 mt-1">
+                            {new Date(item.investment_date).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );})}
+                );
+              })}
             </div>
           </Section>
         )}
 
-        <Section title="Investment Velocity">
-          <div className="overflow-x-auto">
+        <Section title="Investment velocity">
+          <div className="overflow-x-auto data-table-wrap border-0 shadow-none">
             <table className="w-full">
               <thead>
-                <tr className="border-b-[3px] border-black">
+                <tr className="border-b border-slate-200 bg-slate-50">
                   {['Year', 'Q1', 'Q2', 'Q3', 'Q4', 'Total'].map((col) => (
-                    <th
-                      key={col}
-                      className="text-left py-3 px-4 text-xs font-black text-muted uppercase tracking-wider"
-                    >
-                      {col}
-                    </th>
+                    <th key={col} className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{col}</th>
                   ))}
                 </tr>
               </thead>
@@ -256,15 +209,13 @@ export default function InvestorDetailPage({
                   { year: '2023', q1: 14, q2: 16, q3: 13, q4: 11 },
                   { year: '2022', q1: 10, q2: 12, q3: 14, q4: 15 },
                 ].map((row) => (
-                  <tr key={row.year} className="border-b-[2px] border-black/10 hover:bg-[#ffe500]/20 transition-colors">
-                    <td className="py-3.5 px-4 font-black text-foreground text-sm">{row.year}</td>
-                    <td className="py-3.5 px-4 text-muted text-sm font-mono font-bold">{row.q1}</td>
-                    <td className="py-3.5 px-4 text-muted text-sm font-mono font-bold">{row.q2}</td>
-                    <td className="py-3.5 px-4 text-muted text-sm font-mono font-bold">{row.q3}</td>
-                    <td className="py-3.5 px-4 text-muted text-sm font-mono font-bold">{row.q4 || '—'}</td>
-                    <td className="py-3.5 px-4 font-black text-foreground text-sm font-mono">
-                      {row.q1 + row.q2 + row.q3 + row.q4}
-                    </td>
+                  <tr key={row.year} className="border-b border-slate-100 hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3.5 px-4 font-semibold text-slate-900 text-sm">{row.year}</td>
+                    <td className="py-3.5 px-4 text-slate-500 text-sm">{row.q1}</td>
+                    <td className="py-3.5 px-4 text-slate-500 text-sm">{row.q2}</td>
+                    <td className="py-3.5 px-4 text-slate-500 text-sm">{row.q3}</td>
+                    <td className="py-3.5 px-4 text-slate-500 text-sm">{row.q4 || '—'}</td>
+                    <td className="py-3.5 px-4 font-semibold text-slate-900 text-sm">{row.q1 + row.q2 + row.q3 + row.q4}</td>
                   </tr>
                 ))}
               </tbody>
@@ -272,38 +223,33 @@ export default function InvestorDetailPage({
           </div>
         </Section>
 
-        <Section title="Follow-on Strength">
+        <Section title="Follow-on strength">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-6 surface-card bg-[#ffe500]">
-              <p className="text-3xl font-black text-foreground mb-1 tracking-tight font-mono">82%</p>
-              <p className="text-sm text-muted font-bold uppercase">Raised Next Round</p>
+            <div className="stat-card-accent stat-card text-center">
+              <p className="text-3xl font-bold text-slate-900 mb-1">82%</p>
+              <p className="text-sm text-slate-500">Raised next round</p>
             </div>
-            <div className="text-center p-6 surface-card bg-[#0066ff] text-white">
-              <p className="text-3xl font-black mb-1 tracking-tight font-mono">14 months</p>
-              <p className="text-sm font-bold uppercase opacity-80">Avg Time to Next Round</p>
+            <div className="stat-card text-center bg-gradient-to-br from-rose-50 to-orange-50 border-rose-100">
+              <p className="text-3xl font-bold text-rose-600 mb-1">14 mo</p>
+              <p className="text-sm text-slate-500">Avg time to next round</p>
             </div>
-            <div className="text-center p-6 surface-card bg-[#ff3b30] text-white">
-              <p className="text-3xl font-black mb-1 tracking-tight font-mono">3.2x</p>
-              <p className="text-sm font-bold uppercase opacity-80">Avg Valuation Multiple</p>
+            <div className="stat-card text-center">
+              <p className="text-3xl font-bold text-orange-600 mb-1">3.2x</p>
+              <p className="text-sm text-slate-500">Avg valuation multiple</p>
             </div>
           </div>
         </Section>
 
-        <Section title="Co-investor Network">
-          <p className="text-muted mb-6 text-sm font-bold uppercase tracking-wide">
-            Investors who frequently co-invest with {investor.name}
-          </p>
+        <Section title="Co-investor network">
+          <p className="text-slate-500 mb-6 text-sm">Investors who frequently co-invest with {investor.name}</p>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {['Sequoia', 'Accel', 'Lightspeed', 'GV', 'Index', 'Founders Fund'].map((co) => (
-              <div
-                key={co}
-                className="surface-card p-4 card-hover text-center group cursor-default bg-white"
-              >
-                <div className="w-11 h-11 bg-black text-white border-[3px] border-black shadow-[3px_3px_0_#0a0a0a] mx-auto mb-2 flex items-center justify-center group-hover:bg-[#ffe500] group-hover:text-black transition-colors">
-                  <span className="font-black">{co.charAt(0)}</span>
+              <div key={co} className="surface-card card-hover p-4 text-center group cursor-default">
+                <div className="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 mx-auto mb-2 flex items-center justify-center font-bold group-hover:bg-rose-50 group-hover:text-rose-600 transition-colors">
+                  {co.charAt(0)}
                 </div>
-                <p className="text-sm font-black uppercase text-foreground truncate">{co}</p>
-                <p className="text-xs text-muted font-mono font-bold">12 deals</p>
+                <p className="text-sm font-semibold text-slate-900 truncate">{co}</p>
+                <p className="text-xs text-slate-400">12 deals</p>
               </div>
             ))}
           </div>
@@ -322,7 +268,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       transition={{ duration: 0.4 }}
       className="surface-card p-6 md:p-8 mb-6"
     >
-      <h2 className="text-xl font-black uppercase tracking-tight mb-6">{title}</h2>
+      <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-6 capitalize">{title}</h2>
       {children}
     </motion.div>
   );
