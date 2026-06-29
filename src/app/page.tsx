@@ -20,10 +20,11 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorState from '@/components/ui/ErrorState';
+import TrendingCompanyCard from '@/components/ui/TrendingCompanyCard';
 import CategoryTag from '@/components/ui/CategoryTag';
 import { getCategoryIconColor } from '@/lib/categoryColors';
 import { Company } from '@/types';
-import { cn } from '@/lib/utils';
+import { cn, getFallbackLogoUrl } from '@/lib/utils';
 
 const categories = [
   'AI Agents',
@@ -89,8 +90,6 @@ export default function HomePage() {
     return <ErrorState message={error} onRetry={fetchTrendingCompanies} />;
   }
 
-  const featured = trendingCompanies.slice(0, 3);
-  const listItems = trendingCompanies.slice(3, 5);
   const unicorns = trendingCompanies.filter((c) => c.is_unicorn).slice(0, 10);
 
   return (
@@ -159,100 +158,41 @@ export default function HomePage() {
       </section>
 
       {/* Trending */}
-      <section className="py-16 bg-white border-t border-slate-100">
+      <section className="py-16 bg-white">
         <div className="section-container">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex items-end justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
-                TRENDING
-              </span>
-              <h2 className="text-2xl font-bold text-slate-900 mt-1">Trending AI Companies</h2>
+              <p className="text-xs font-semibold text-red-500 uppercase tracking-wider mb-1">
+                Trending
+              </p>
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Trending AI Companies
+              </h2>
             </div>
             <Link
               href="/companies"
-              className="text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors"
+              className="text-sm font-medium text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors flex-shrink-0"
             >
-              View all &rarr;
+              View all
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {loading ? (
             <LoadingSpinner />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {featured.map((company, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {trendingCompanies.slice(0, 5).map((company, index) => (
                 <motion.div
                   key={company.id}
-                  className="col-span-1 bg-slate-900 rounded-2xl p-6 relative overflow-hidden hover:bg-slate-800 transition-colors cursor-pointer group flex flex-col justify-between min-h-[320px]"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ delay: index * 0.08, duration: 0.4 }}
                 >
-                  <Link href={`/companies/${company.slug}`} className="absolute inset-0 z-10" />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-
-                  {/* Top logo & badge */}
-                  <div className="relative z-20 flex justify-between items-start w-full">
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg",
-                      logoColors[company.category] || "bg-slate-100 text-slate-700"
-                    )}>
-                      {company.name.charAt(0)}
-                    </div>
-                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                      🔥 #{index + 1}
-                    </span>
-                  </div>
-
-                  {/* Bottom Text */}
-                  <div className="relative z-20 mt-auto">
-                    <h3 className="text-white text-xl font-bold">{company.name}</h3>
-                    <p className="text-slate-400 text-sm mt-1 line-clamp-2">
-                      {company.tagline || company.description}
-                    </p>
-                    <div className="flex items-center justify-between mt-4">
-                      <CategoryTag category={company.category} />
-                      <span className="text-white text-sm font-medium">
-                        {company.valuation ? `$${(company.valuation / 1e9).toFixed(1)}B` : ''}
-                      </span>
-                    </div>
-                  </div>
+                  <TrendingCompanyCard company={company} rank={index + 1} />
                 </motion.div>
               ))}
-
-              {/* White List Cards Column */}
-              <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
-                {listItems.map((company, index) => (
-                  <motion.div
-                    key={company.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: (index + 3) * 0.1 }}
-                  >
-                    <Link
-                      href={`/companies/${company.slug}`}
-                      className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3 bg-white h-[152px]"
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base flex-shrink-0",
-                        logoColors[company.category] || "bg-slate-100 text-slate-700"
-                      )}>
-                        {company.name.charAt(0)}
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="font-semibold text-slate-900 truncate">{company.name}</h3>
-                        <p className="text-xs text-slate-500 mt-0.5">{company.category}</p>
-                      </div>
-                      <span className="text-sm font-medium text-slate-700 ml-auto">
-                        {company.valuation ? `$${(company.valuation / 1e9).toFixed(1)}B` : ''}
-                      </span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
             </div>
           )}
         </div>
@@ -275,14 +215,38 @@ export default function HomePage() {
                 href={`/companies/${company.slug}`}
                 className="flex-shrink-0 min-w-[180px] bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow text-center cursor-pointer"
               >
-                <div
-                  className={cn(
-                    'w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center font-bold text-lg',
-                    logoColors[company.category] || 'bg-slate-100 text-slate-700'
-                  )}
-                >
-                  {company.name.charAt(0)}
-                </div>
+                {getFallbackLogoUrl(company.logo_url) ? (
+                  <div className="relative w-12 h-12 mx-auto mb-3">
+                    <img 
+                      src={getFallbackLogoUrl(company.logo_url) || ''} 
+                      alt={`${company.name} logo`} 
+                      className="w-12 h-12 rounded-xl object-contain bg-white border border-slate-100 p-1.5 mx-auto relative z-10"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = document.getElementById(`growth-fallback-${company.id}`);
+                        if (fallback) fallback.classList.remove('hidden');
+                      }}
+                    />
+                    <div 
+                      id={`growth-fallback-${company.id}`}
+                      className={cn(
+                        'absolute inset-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg hidden mx-auto',
+                        logoColors[company.category] || 'bg-slate-100 text-slate-700'
+                      )}
+                    >
+                      {company.name.charAt(0)}
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className={cn(
+                      'w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center font-bold text-lg',
+                      logoColors[company.category] || 'bg-slate-100 text-slate-700'
+                    )}
+                  >
+                    {company.name.charAt(0)}
+                  </div>
+                )}
                 <p className="text-sm font-semibold text-slate-900 truncate">{company.name}</p>
                 <p className="text-xs text-slate-500 mt-0.5 truncate">{company.category}</p>
                 <div className="mt-3">
@@ -327,9 +291,35 @@ export default function HomePage() {
                       gradient
                     )}>
                       <div>
-                        <span className="inline-block bg-white/20 text-white text-xs px-2 py-0.5 rounded-full mb-3 font-medium">
-                          {company.category}
-                        </span>
+                        <div className="flex justify-between items-start mb-3">
+                          <span className="inline-block bg-white/20 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                            {company.category}
+                          </span>
+                          {getFallbackLogoUrl(company.logo_url) ? (
+                            <div className="relative w-10 h-10">
+                              <img 
+                                src={getFallbackLogoUrl(company.logo_url) || ''} 
+                                alt={`${company.name} logo`} 
+                                className="w-10 h-10 rounded-lg object-contain bg-white p-1 relative z-10"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  const fallback = document.getElementById(`emerging-fallback-${company.id}`);
+                                  if (fallback) fallback.classList.remove('hidden');
+                                }}
+                              />
+                              <div 
+                                id={`emerging-fallback-${company.id}`}
+                                className="absolute inset-0 w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center font-bold text-sm hidden"
+                              >
+                                {company.name.charAt(0)}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center font-bold text-sm">
+                              {company.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
                         <h3 className="text-xl font-bold">{company.name}</h3>
                         <p className="text-white/70 text-sm mt-1 line-clamp-2">
                           {company.tagline || company.description}
@@ -408,14 +398,38 @@ export default function HomePage() {
                 href={`/companies/${company.slug}`}
                 className="flex-shrink-0 w-40 p-4 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 hover:border-slate-600 transition-colors text-center cursor-pointer"
               >
-                <div
-                  className={cn(
-                    'w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center font-bold text-lg',
-                    logoColors[company.category] || 'bg-slate-100 text-slate-700'
-                  )}
-                >
-                  {company.name.charAt(0)}
-                </div>
+                {getFallbackLogoUrl(company.logo_url) ? (
+                  <div className="relative w-12 h-12 mx-auto mb-3">
+                    <img 
+                      src={getFallbackLogoUrl(company.logo_url) || ''} 
+                      alt={`${company.name} logo`} 
+                      className="w-12 h-12 rounded-xl object-contain bg-white p-1.5 mx-auto relative z-10"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = document.getElementById(`unicorn-fallback-${company.id}`);
+                        if (fallback) fallback.classList.remove('hidden');
+                      }}
+                    />
+                    <div 
+                      id={`unicorn-fallback-${company.id}`}
+                      className={cn(
+                        'absolute inset-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg hidden mx-auto',
+                        logoColors[company.category] || 'bg-slate-100 text-slate-700'
+                      )}
+                    >
+                      {company.name.charAt(0)}
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className={cn(
+                      'w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center font-bold text-lg',
+                      logoColors[company.category] || 'bg-slate-100 text-slate-700'
+                    )}
+                  >
+                    {company.name.charAt(0)}
+                  </div>
+                )}
                 <p className="font-semibold text-white text-sm truncate">{company.name}</p>
                 <p className="text-slate-400 text-xs mt-1">
                   ${company.valuation ? (company.valuation / 1e9).toFixed(1) : '0'}B

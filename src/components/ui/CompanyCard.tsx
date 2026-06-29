@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
 import { Company } from '@/types';
-import { cn } from '@/lib/utils';
+import { cn, getFallbackLogoUrl } from '@/lib/utils';
 import { getCategoryLogoColor } from '@/lib/categoryColors';
 import CategoryTag from './CategoryTag';
 import TrendingBadge from './TrendingBadge';
@@ -27,22 +27,39 @@ function formatViews(count: number): string {
 }
 
 function CompanyLogo({ company, size = 'md' }: { company: Company; size?: 'sm' | 'md' | 'lg' }) {
-  const letter = company.name.charAt(0).toUpperCase();
   const sizeClass = {
     sm: 'w-9 h-9 text-sm rounded-lg',
     md: 'w-11 h-11 text-base rounded-xl',
     lg: 'w-12 h-12 text-lg rounded-xl',
   }[size];
 
+  const logoUrl = getFallbackLogoUrl(company.logo_url);
+
   return (
-    <div
-      className={cn(
-        'flex items-center justify-center flex-shrink-0 font-semibold',
-        sizeClass,
-        getCategoryLogoColor(company.category)
-      )}
-    >
-      {letter}
+    <div className={cn("relative flex-shrink-0", sizeClass)}>
+      {logoUrl ? (
+        <img 
+          src={logoUrl} 
+          alt={`${company.name} logo`} 
+          className={cn("object-contain bg-white p-1 w-full h-full", sizeClass)}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            const fallback = document.getElementById(`card-logo-fallback-${company.id}-${size}`);
+            if (fallback) fallback.classList.remove('hidden');
+          }}
+        />
+      ) : null}
+      <div
+        id={`card-logo-fallback-${company.id}-${size}`}
+        className={cn(
+          'flex items-center justify-center font-semibold w-full h-full absolute inset-0',
+          company.logo_url ? 'hidden' : '',
+          sizeClass,
+          getCategoryLogoColor(company.category)
+        )}
+      >
+        {company.name.charAt(0).toUpperCase()}
+      </div>
     </div>
   );
 }
