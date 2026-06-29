@@ -582,30 +582,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="bg-slate-50 py-16 border-t border-slate-100">
-        <div className="section-container">
-          <div className="bg-white rounded-3xl p-12 max-w-2xl mx-auto shadow-sm border border-slate-100">
-            <h2 className="text-3xl font-bold text-slate-900 text-center">
-              Stay updated on the AI economy
-            </h2>
-            <p className="text-slate-500 text-center mt-2">
-              Weekly insights on startups, funding, and market trends
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 mt-8 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-red-400 transition-colors"
-              />
-              <button className="bg-red-500 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-red-600 transition-colors whitespace-nowrap">
-                Subscribe
-              </button>
-            </div>
-            <p className="text-slate-500 text-sm text-center mt-4">50,000+ subscribers</p>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

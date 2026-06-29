@@ -83,14 +83,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            <button className="text-sm text-slate-700 font-medium hover:text-slate-900 transition-colors">
-              Log In
-            </button>
-            <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
-              Sign Up
-            </button>
-          </div>
+          {/* Auth buttons removed */}
 
           <button
             className="md:hidden p-2 text-slate-600 hover:text-slate-900"
@@ -127,14 +120,6 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4 mt-2 border-t border-slate-200 space-y-2">
-                <button className="w-full py-2.5 text-sm text-slate-700 font-medium border border-slate-200 rounded-lg hover:bg-slate-50">
-                  Log In
-                </button>
-                <button className="w-full py-2.5 text-sm bg-red-500 text-white font-medium rounded-lg hover:bg-red-600">
-                  Sign Up
-                </button>
-              </div>
             </div>
           </motion.div>
         )}
