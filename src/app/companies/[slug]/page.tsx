@@ -912,7 +912,7 @@ function InvestorColumn({
       <div className="space-y-2">
         {investors.length > 0 ? (
           investors.map((inv, idx) => (
-            <div key={inv.id ?? idx} className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl">
+            <div key={`${inv.id ?? 'inv'}-${idx}`} className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl">
               <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-sm flex-shrink-0">
                 {inv.name.charAt(0)}
               </div>

@@ -119,7 +119,7 @@ export default function TrendingCompanyCard({ company, rank }: TrendingCompanyCa
 
         {/* Title & Tagline */}
         <div className="mt-5 flex-1 flex flex-col justify-start">
-          <h3 className="text-lg font-bold text-slate-800 leading-snug group-hover:text-red-500 transition-colors duration-200">
+          <h3 className="text-lg font-bold text-slate-800 leading-snug group-hover:text-rose-600 transition-colors duration-200">
             {company.name}
           </h3>
           <p className="text-sm text-slate-500 mt-2 line-clamp-2 leading-relaxed font-medium">

@@ -26,30 +26,37 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="section-container py-14">
+    <footer className="relative bg-slate-950 text-white overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(225,29,72,0.12),transparent)] pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent" />
+
+      <div className="section-container relative py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">G</span>
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center shadow-lg shadow-rose-500/20">
+                <span className="text-white font-bold text-sm">G</span>
               </div>
-              <span className="text-lg font-semibold text-white">GraphOne</span>
+              <span className="text-lg font-bold text-white tracking-tight">
+                Graph<span className="text-rose-400">One</span>
+              </span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+            <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
               The global intelligence layer for the AI economy.
             </p>
           </div>
 
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h3 className="text-sm font-semibold text-white mb-4">{title}</h3>
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">
+                {title}
+              </h3>
               <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+                      className="text-sm text-slate-400 hover:text-white transition-colors duration-200"
                     >
                       {link.label}
                     </Link>
@@ -60,14 +67,14 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">
+        <div className="border-t border-slate-800/80 mt-14 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-slate-500 text-sm">
             &copy; {new Date().getFullYear()} GraphOne. All rights reserved.
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <Link
               href="/twitter"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
               aria-label="Twitter"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -76,7 +83,7 @@ export default function Footer() {
             </Link>
             <Link
               href="/linkedin"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
               aria-label="LinkedIn"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">

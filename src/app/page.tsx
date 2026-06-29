@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -181,6 +182,8 @@ function EmergingCompanyCard({ company, index }: EmergingCompanyCardProps) {
 }
 
 export default function HomePage() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
   const [trendingCompanies, setTrendingCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -208,6 +211,13 @@ export default function HomePage() {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   if (error) {
     return <ErrorState message={error} onRetry={fetchTrendingCompanies} />;
   }
@@ -215,61 +225,83 @@ export default function HomePage() {
   const unicorns = trendingCompanies.filter((c) => c.is_unicorn).slice(0, 10);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white pt-20 pb-16">
-        <div className="section-container">
+      <section className="relative overflow-hidden hero-mesh pt-16 pb-20 md:pt-24 md:pb-28">
+        <div className="absolute inset-0 hero-dot-grid opacity-60 pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-rose-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+        <div className="section-container relative">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="w-full flex flex-col items-center"
           >
-            <span className="inline-flex items-center px-3 py-1 bg-red-50 text-red-600 border border-red-200 text-xs font-medium rounded-full mb-6">
-              🤖 AI COMPANIES
-            </span>
-            <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight text-center mt-4">
-              Discover the world&apos;s most<br />
-              innovative <span className="text-red-500">AI companies</span>
+            <motion.span
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 text-rose-600 border border-rose-200/60 text-xs font-semibold rounded-full mb-8 shadow-sm shadow-rose-500/5 backdrop-blur-sm"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              AI Intelligence Platform
+            </motion.span>
+
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.08] text-center tracking-tight">
+              Discover the world&apos;s most
+              <br />
+              innovative{' '}
+              <span className="gradient-text">AI companies</span>
             </h1>
-            <p className="text-xl text-slate-500 text-center mt-4 max-w-2xl mx-auto">
+
+            <p className="text-lg sm:text-xl text-slate-500 text-center mt-6 max-w-2xl mx-auto leading-relaxed">
               Track 50,000+ AI companies, $100B+ in funding, and the investors building the AI economy
             </p>
 
             {/* Stats Row */}
-            <div className="flex gap-12 justify-center mt-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-900">50K+</div>
-                <div className="text-sm text-slate-500">Companies</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-900">$100B+</div>
-                <div className="text-sm text-slate-500">Funding</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-900">6K+</div>
-                <div className="text-sm text-slate-500">Investors</div>
-              </div>
+            <div className="flex flex-wrap gap-4 sm:gap-0 sm:divide-x sm:divide-slate-200 justify-center mt-10 glass rounded-2xl px-6 sm:px-10 py-5 shadow-lg shadow-slate-900/[0.04]">
+              {[
+                { value: '50K+', label: 'Companies', icon: Bot },
+                { value: '$100B+', label: 'Funding', icon: TrendingUp },
+                { value: '6K+', label: 'Investors', icon: Zap },
+              ].map(({ value, label, icon: Icon }) => (
+                <div key={label} className="flex items-center gap-3 px-6 sm:px-8">
+                  <div className="hidden sm:flex w-9 h-9 rounded-lg bg-rose-50 items-center justify-center">
+                    <Icon className="w-4 h-4 text-rose-500" />
+                  </div>
+                  <div className="text-center sm:text-left">
+                    <div className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{value}</div>
+                    <div className="text-sm text-slate-500 font-medium">{label}</div>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Search Bar */}
-            <div className="w-full mt-10 max-w-2xl mx-auto flex items-center border-2 border-slate-200 rounded-2xl px-4 py-3 focus-within:border-red-400 shadow-sm bg-white">
-              <input
-                type="text"
-                placeholder="Search companies, investors, products..."
-                className="flex-1 outline-none text-slate-800 text-base placeholder:text-slate-400 bg-white"
-              />
-              <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl text-sm font-medium ml-2 transition-colors">
-                Search
-              </button>
+            <div className="w-full mt-10 max-w-2xl mx-auto">
+              <form onSubmit={handleSearch} className="gradient-border flex items-center px-2 py-2 shadow-xl shadow-slate-900/[0.06] focus-within:shadow-rose-500/10 transition-shadow duration-300">
+                <Search className="w-5 h-5 text-slate-400 ml-3 flex-shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search companies, investors, products..."
+                  className="flex-1 outline-none text-slate-800 text-base placeholder:text-slate-400 bg-transparent px-3 py-2.5"
+                />
+                <button type="submit" className="bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 shadow-md shadow-rose-500/20 hover:shadow-lg hover:shadow-rose-500/30">
+                  Search
+                </button>
+              </form>
             </div>
 
             {/* Category Pills Row */}
-            <div className="mt-6 flex gap-2 justify-center flex-wrap">
+            <div className="mt-8 flex gap-2 justify-center flex-wrap max-w-3xl">
               {categories.map((category) => (
                 <button
                   key={category}
-                  className="border border-slate-200 rounded-full px-4 py-1.5 text-sm text-slate-600 hover:border-red-400 hover:text-red-500 cursor-pointer transition-colors"
+                  onClick={() => router.push(category === 'More' ? '/companies' : `/companies?category=${encodeURIComponent(category)}`)}
+                  className="bg-white/70 backdrop-blur-sm border border-slate-200/80 rounded-full px-4 py-2 text-sm text-slate-600 font-medium hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50/50 hover:shadow-sm cursor-pointer transition-all duration-200"
                 >
                   {category}
                 </button>
@@ -280,23 +312,21 @@ export default function HomePage() {
       </section>
 
       {/* Trending */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="section-container">
-          <div className="flex items-end justify-between gap-4 mb-8">
+          <div className="flex items-end justify-between gap-4 mb-10">
             <div>
-              <p className="text-xs font-semibold text-red-500 uppercase tracking-wider mb-1">
-                Trending
-              </p>
-              <h2 className="text-2xl font-semibold text-gray-900">
+              <p className="section-label mb-2">Trending</p>
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
                 Trending AI Companies
               </h2>
             </div>
             <Link
               href="/companies"
-              className="text-sm font-medium text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors flex-shrink-0"
+              className="group text-sm font-semibold text-rose-500 hover:text-rose-600 flex items-center gap-1.5 transition-colors flex-shrink-0"
             >
               View all
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
@@ -321,13 +351,12 @@ export default function HomePage() {
       </section>
 
       {/* Fastest Growing */}
-      <section className="py-16 bg-slate-50 border-t border-slate-100">
+      <section className="py-20 bg-slate-50/80 border-y border-slate-200/60">
         <div className="section-container">
-          <div className="mb-8">
-            <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
-              GROWTH
-            </span>
-            <h2 className="text-2xl font-bold text-slate-900 mt-1">Fastest Growing</h2>
+          <div className="mb-10">
+            <p className="section-label mb-2">Growth</p>
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Fastest Growing</h2>
+            <p className="text-sm text-slate-500 mt-2">Companies with the highest momentum this quarter</p>
           </div>
 
           <InfiniteScroll speed={30} pauseOnHover className="mt-6">
@@ -335,7 +364,7 @@ export default function HomePage() {
               <Link
                 key={company.id}
                 href={`/companies/${company.slug}`}
-                className="flex-shrink-0 min-w-[180px] bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-shadow text-center cursor-pointer"
+                className="flex-shrink-0 min-w-[190px] bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-lg hover:border-emerald-200/60 hover:-translate-y-0.5 transition-all duration-300 text-center cursor-pointer group"
               >
                 {getFallbackLogoUrl(company.logo_url) ? (
                   <div className="relative w-12 h-12 mx-auto mb-3">
@@ -369,10 +398,11 @@ export default function HomePage() {
                     {company.name.charAt(0)}
                   </div>
                 )}
-                <p className="text-sm font-semibold text-slate-900 truncate">{company.name}</p>
+                <p className="text-sm font-bold text-slate-900 truncate group-hover:text-rose-600 transition-colors">{company.name}</p>
                 <p className="text-xs text-slate-500 mt-0.5 truncate">{company.category}</p>
                 <div className="mt-3">
-                  <span className="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
+                    <TrendingUp className="w-3 h-3" />
                     +{company.growth_score.toFixed(0)}%
                   </span>
                 </div>
@@ -383,13 +413,18 @@ export default function HomePage() {
       </section>
 
       {/* Emerging Startups */}
-      <section className="py-16 bg-white border-t border-slate-100">
-        <div className="section-container">
-          <div className="mb-8">
-            <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
-              EMERGING
-            </span>
-            <h2 className="text-2xl font-bold text-slate-900 mt-1">Startups to Watch</h2>
+      <section className="py-20 bg-slate-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(225,29,72,0.08),transparent)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-30 pointer-events-none" />
+
+        <div className="section-container relative">
+          <div className="mb-10">
+            <p className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-rose-400 mb-2">
+              <span className="w-5 h-0.5 rounded-full bg-gradient-to-r from-rose-400 to-orange-400" />
+              Emerging
+            </p>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Startups to Watch</h2>
+            <p className="text-sm text-slate-400 mt-2">Early-stage companies making waves in AI</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -409,38 +444,39 @@ export default function HomePage() {
       </section>
 
       {/* Browse by Category */}
-      <section className="py-16 bg-slate-50 border-t border-slate-100">
+      <section className="py-20 bg-[#fafafa]">
         <div className="section-container">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-900">Browse by Category</h2>
-            <p className="text-sm text-slate-500 mt-1">Explore the AI landscape by sector</p>
+          <div className="mb-10">
+            <p className="section-label mb-2">Explore</p>
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Browse by Category</h2>
+            <p className="text-sm text-slate-500 mt-2">Explore the AI landscape by sector</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {browseCategories.map((category) => {
               const Icon = category.icon;
               return (
                 <motion.div
                   key={category.name}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2 }}
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Link
                     href={`/companies?category=${encodeURIComponent(category.name)}`}
-                    className="block p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-red-200 transition-all cursor-pointer group"
+                    className="block p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-rose-200/60 transition-all duration-300 cursor-pointer group card-hover"
                   >
                     <div
                       className={cn(
-                        'w-12 h-12 rounded-xl flex items-center justify-center mb-4',
+                        'w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110',
                         getCategoryIconColor(category.name)
                       )}
                     >
                       <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="font-semibold text-slate-900 group-hover:text-red-500 transition-colors">
+                    <h3 className="font-bold text-slate-900 group-hover:text-rose-600 transition-colors">
                       {category.name}
                     </h3>
-                    <p className="text-sm text-slate-500 mt-1">{category.count} companies</p>
+                    <p className="text-sm text-slate-500 mt-1.5">{category.count} companies</p>
                   </Link>
                 </motion.div>
               );
@@ -450,12 +486,21 @@ export default function HomePage() {
       </section>
 
       {/* AI Unicorns */}
-      <section className="py-16 bg-slate-900 text-white border-t border-slate-800">
-        <div className="section-container">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="text-3xl">🦄</span>
+      <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_80%_20%,rgba(168,85,247,0.08),transparent)] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+
+        <div className="section-container relative">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center text-2xl">
+              🦄
+            </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">AI UNICORNS</h2>
+              <p className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-purple-400 mb-1">
+                <span className="w-5 h-0.5 rounded-full bg-gradient-to-r from-purple-400 to-pink-400" />
+                Unicorns
+              </p>
+              <h2 className="text-3xl font-bold text-white tracking-tight">AI Unicorns</h2>
               <p className="text-sm text-slate-400 mt-1">Companies valued at $1B+</p>
             </div>
           </div>
@@ -465,7 +510,7 @@ export default function HomePage() {
               <Link
                 key={company.id}
                 href={`/companies/${company.slug}`}
-                className="flex-shrink-0 w-40 p-4 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 hover:border-slate-600 transition-colors text-center cursor-pointer"
+                className="flex-shrink-0 w-44 p-5 glass-dark rounded-2xl hover:bg-slate-800/90 hover:border-purple-500/20 hover:-translate-y-0.5 transition-all duration-300 text-center cursor-pointer group"
               >
                 {getFallbackLogoUrl(company.logo_url) ? (
                   <div className="relative w-12 h-12 mx-auto mb-3">
@@ -499,9 +544,9 @@ export default function HomePage() {
                     {company.name.charAt(0)}
                   </div>
                 )}
-                <p className="font-semibold text-white text-sm truncate">{company.name}</p>
-                <p className="text-slate-400 text-xs mt-1">
-                  ${company.valuation ? (company.valuation / 1e9).toFixed(1) : '0'}B
+                <p className="font-bold text-white text-sm truncate group-hover:text-purple-200 transition-colors">{company.name}</p>
+                <p className="text-purple-300/80 text-xs font-semibold mt-1.5">
+                  ${company.valuation ? (company.valuation / 1e9).toFixed(1) : '0'}B valuation
                 </p>
               </Link>
             ))}
@@ -510,14 +555,12 @@ export default function HomePage() {
       </section>
 
       {/* Frontier Labs */}
-      <section className="py-16 bg-white border-t border-slate-100">
+      <section className="py-20 bg-white border-t border-slate-200/60">
         <div className="section-container">
-          <div className="mb-8">
-            <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">
-              FRONTIER
-            </span>
-            <h2 className="text-2xl font-bold text-slate-900 mt-1">Leading AI Research Labs</h2>
-            <p className="text-sm text-slate-500 mt-1">Pushing the boundaries of AI capabilities</p>
+          <div className="mb-10">
+            <p className="section-label mb-2">Frontier</p>
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Leading AI Research Labs</h2>
+            <p className="text-sm text-slate-500 mt-2">Pushing the boundaries of AI capabilities</p>
           </div>
 
           <InfiniteScroll speed={32} pauseOnHover className="mt-6">
@@ -528,7 +571,7 @@ export default function HomePage() {
               <Link
                 key={`frontier-${company.id}`}
                 href={`/companies/${company.slug}`}
-                className="flex-shrink-0 w-64 p-6 bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-red-200 transition-all cursor-pointer group"
+                className="flex-shrink-0 w-72 p-6 bg-gradient-to-br from-slate-50 via-white to-rose-50/30 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-rose-200/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-start gap-4">
                   {getFallbackLogoUrl(company.logo_url) ? (
@@ -564,7 +607,7 @@ export default function HomePage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-slate-900 group-hover:text-red-500 transition-colors truncate">
+                    <h3 className="font-bold text-slate-900 group-hover:text-rose-600 transition-colors truncate">
                       {company.name}
                     </h3>
                     <p className="text-xs text-slate-500 mt-1 line-clamp-2">
